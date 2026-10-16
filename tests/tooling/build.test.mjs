@@ -4,7 +4,12 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { parse, tokTypes, tokenizer } from "acorn";
-import { buildUserscript } from "../../scripts/build.mjs";
+import {
+  BUILD_NUMBER_PATH,
+  buildUserscript,
+  headerVersion,
+  nextBuildNumber,
+} from "../../scripts/build.mjs";
 import { ROOT } from "../../scripts/lib/modules.mjs";
 
 const built = await buildUserscript(ROOT);
@@ -36,12 +41,36 @@ test("the userscript manager cannot replace a custom build with the official scr
   assert.doesNotMatch(metadata, /@(updateURL|downloadURL)\s+\S*pale\.tools/);
 });
 
+test("a build number is appended to @version, and nothing else changes", async () => {
+  const version = headerVersion(header);
+  const numbered = await buildUserscript(ROOT, { buildNumber: 7 });
+  assert(numbered.includes(`\n// @version ${version}.7\n`), "@version gets .7");
+  assert.equal(numbered.replace(`// @version ${version}.7\n`, `// @version ${version}\n`), built);
+  assert.equal(headerVersion(header.replace(/\n/g, "\r\n")), version, "CRLF headers work too");
+  assert.throws(() => headerVersion("// ==UserScript==\n// ==/UserScript=="), /no `\/\/ @version`/);
+});
+
+test("the build number counts the builds of each version, from 1", () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "paletools-build-number-"));
+  const save = (text) => fs.writeFileSync(path.join(directory, BUILD_NUMBER_PATH), text);
+  try {
+    assert.equal(nextBuildNumber("27.1.5", directory), 1, "the first build is number 1");
+    save(JSON.stringify({ version: "27.1.5", builds: 9 }));
+    assert.equal(nextBuildNumber("27.1.5", directory), 10);
+    assert.equal(nextBuildNumber("27.1.6", directory), 1, "a new version counts from 1 again");
+    for (const broken of ["not json", "{}", '{"version":"27.1.5","builds":0}']) {
+      save(broken);
+      assert.throws(() => nextBuildNumber("27.1.5", directory), /is not valid/, broken);
+    }
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("@version matches paletoolsVersion of src/config/version.js", () => {
-  const version = header.match(/^\/\/ @version (\S+)$/m)?.[1];
   const versionModule = fs.readFileSync(path.join(ROOT, "src/config/version.js"), "utf8");
   const configured = versionModule.match(/export const paletoolsVersion = "([^"]*)";/)?.[1];
-  assert(version, "src/userscript-header.js has a @version line");
-  assert.equal(configured, version, "change the version in both files");
+  assert.equal(configured, headerVersion(header), "change the version in both files");
 });
 
 test("the userscript is a self-contained, readable script", () => {

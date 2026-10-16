@@ -1,5 +1,5 @@
 /**
- * Your own plugins (see README.md, "Adding a feature"). src/bootstrap/boot.js runs them after
+ * Your own plugins (see docs/ADDING-A-FEATURE.md). src/bootstrap/boot.js runs them after
  * the built-in plugin list, in the order of this list, and then the settings plugin, which adds
  * their settings tiles to the Paletools settings screen.
  *

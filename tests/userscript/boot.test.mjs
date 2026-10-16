@@ -1,5 +1,6 @@
-// Boots the complete generated userscript in the simulated Web App (see
-// tests/support/webapp-harness.mjs) and compares its behavior with the recorded snapshot
+// Boots the complete generated userscript (the file named by PALETOOLS_USERSCRIPT, which
+// `npm test` sets to a fresh test build, else dist/paletools.user.js) in the simulated Web App
+// (see tests/support/webapp-harness.mjs) and compares its behavior with the recorded snapshot
 // (boot-fingerprint.snapshot.json): every Web App call, prototype override, listener,
 // stylesheet, timer and dispatched event during the boot, in order, plus the effect of calling
 // each installed prototype override once. When a change is meant to alter the boot (for example
@@ -12,7 +13,10 @@ import { bootFingerprint } from "../support/boot-fingerprint.mjs";
 
 const root = path.resolve(import.meta.dirname, "..", "..");
 const { output } = JSON.parse(fs.readFileSync(path.join(root, "src/manifest.json"), "utf8"));
-const userscript = fs.readFileSync(path.join(root, output), "utf8");
+const userscript = fs.readFileSync(
+  process.env.PALETOOLS_USERSCRIPT || path.join(root, output),
+  "utf8",
+);
 const snapshot = JSON.parse(
   fs.readFileSync(path.join(import.meta.dirname, "boot-fingerprint.snapshot.json"), "utf8"),
 );

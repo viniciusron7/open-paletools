@@ -4,8 +4,9 @@
 //   PALETOOLS_TEST_TARGET=src         (default) evaluates src/ modules the way the build does:
 //                                     imports removed, `export` dropped, one shared scope;
 //   PALETOOLS_TEST_TARGET=userscript  evaluates the matching `// #region <module>` sections of
-//                                     the generated userscript (dist/paletools.user.js, written
-//                                     by `npm run build`; `npm test` builds it first).
+//                                     the generated userscript: the file named by
+//                                     PALETOOLS_USERSCRIPT (`npm test` sets it to a fresh test
+//                                     build), else dist/paletools.user.js (`npm run build`).
 // Only the requested modules (or function declarations) are evaluated. Every other binding
 // resolves to a global of the context, which is where tests inject their fakes.
 const assert = require("node:assert/strict");
@@ -16,7 +17,8 @@ const acorn = require("acorn");
 const modules = require("../../scripts/lib/modules.mjs");
 
 const ROOT = path.join(__dirname, "..", "..");
-const USERSCRIPT_PATH = path.join(ROOT, modules.readManifest(ROOT).output);
+const USERSCRIPT_PATH =
+  process.env.PALETOOLS_USERSCRIPT || path.join(ROOT, modules.readManifest(ROOT).output);
 const TARGETS = ["src", "userscript"];
 
 function currentTarget() {
@@ -30,7 +32,7 @@ function userscriptRegions() {
   if (userscriptCache) return userscriptCache;
   assert(
     fs.existsSync(USERSCRIPT_PATH),
-    `${USERSCRIPT_PATH} does not exist: run \`npm run build\``,
+    `${USERSCRIPT_PATH} does not exist: run \`npm test\` or \`npm run build\``,
   );
   const source = fs.readFileSync(USERSCRIPT_PATH, "utf8");
   const regions = new Map();

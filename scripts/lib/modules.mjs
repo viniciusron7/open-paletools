@@ -79,7 +79,7 @@ export function analyzeModule(modulePath, root = ROOT) {
     throw new Error(`${modulePath}: ${error.message}`);
   }
   // A `@mutable` tag in the comment right above `export let x` declares shared mutable state:
-  // other modules may assign it (see scripts/check-modules.mjs and README.md).
+  // other modules may assign it (see scripts/check-modules.mjs and docs/MODULE-RULES.md).
   const isMarkedMutable = (statement) =>
     comments.some(
       (comment) =>

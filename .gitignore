@@ -1,8 +1,9 @@
 # Dependencies (npm ci)
 node_modules/
 
-# Build output (npm run build): rebuild it from src/ instead of committing it
+# Build output and build counter (npm run build): local to each clone, never committed
 /dist/
+/.build-number.json
 
 # Local files that are not part of the project
 /paletools.user.js
