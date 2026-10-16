@@ -1,0 +1,150 @@
+.playerOverview .preferredPosition {
+    display: none !important;
+    /* remove fut trade enhacer */
+}
+
+.right-column-info {
+    font-size: 10px;
+    font-family: 'UltimateTeamCondensed';
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 20%;
+    right: 0px;
+    border-radius: 0.35em;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* .small .right-column-info {
+    right: -8px;
+} */
+
+.ut-transfer-list-view .right-column-info,
+.SearchResults .right-column-info {
+    display: none;
+}
+
+.item.player.small .playerOverview {
+    top: 20%;
+    width: 26%;
+}
+
+.large .alternative-positions {
+    right: 5px;
+}
+
+.skill-moves::before {
+    content: var(--icon-skillmoves-content);
+    font-family: 'UltimateTeam-Icons';
+    font-size: 8px;
+}
+
+.ut-transfer-list-view .alternative-positions,
+.ut-watch-list-view .alternative-positions {
+    display: none !important;
+}
+
+.ut-squad-slot-chemistry-points-view.item {
+    bottom: 0px;
+}
+
+.ut-squad-slot-view .untradeable::before {
+    content: var(--icon-untradeable-content);
+    font-family: UltimateTeam-Icons, sans-serif;
+    color: #f6b803;
+    margin-top: 2px;
+    position: absolute;
+    width: 1.1em;
+}
+
+.ut-squad-slot-view .untradeable {
+    position: absolute;
+    right: 19px;
+    top: 0;
+}
+
+.pristine-player .ut-item-view--main::after {
+    font-family: "UltimateTeam-Icons";
+    content: var(--icon-pristine-content);
+    margin-right: 4px;
+    color: #b9f2ff;
+    font-size: 11px;
+    display: none;
+    position: absolute;
+    width: 100%;
+    margin-left: 10px;
+}
+
+.SearchResults .pristine-player .ut-item-view--main::after {
+    display: inline-block;
+}
+
+.league {
+    font-size: 10px;
+    font-family: 'UltimateTeamCondensed';
+    display: inline-block;
+    position: absolute;
+    top: 4px;
+    left: calc(50% - 13px);
+    border-radius: 25%;
+    width: 27px;
+    text-align: center;
+    height: 16px;
+    line-height: 16px;
+    margin-bottom: 1px;
+    background-color: #0099cc;
+    color: white;
+    border: 1px solid white
+}
+
+.large .league {
+    top: 17px;
+}
+
+.player.locked::before {
+    content: ' ';
+    filter: var(--lock-icon-red);
+    background: var(--lock-icon-bk);
+    background-size: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.player .storage {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    bottom: 0;
+    z-index: 10000;
+    right: 0;
+    background-size: 32px 32px;
+    background-position: center;
+    filter: brightness(0) saturate(100%) invert(39%) sepia(83%) saturate(746%) hue-rotate(330deg) brightness(90%) contrast(95%);
+}
+
+.player .player-count {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    z-index: 10000;
+    background: #333333;
+    border-radius: 16px;
+    text-align: center;
+    padding: 4px;
+    border: 1px solid white;
+    bottom: 0;
+}
+
+.item.player.small .icon_chemistry_first_owner {
+    margin-bottom: -5px;
+}
+
+.weak-foot {
+    white-space: nowrap;
+}

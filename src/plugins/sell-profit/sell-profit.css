@@ -1,0 +1,15 @@
+.listFUTItem.selected .sell-profit .sell-profit-value,
+.listFUTItem .sell-profit .sell-profit-value,
+.boughtPriceValue.sell-profit-value {
+    color: var(--success) !important;
+}
+
+.listFUTItem.selected .sell-profit .sell-profit-value.profit-loss,
+.listFUTItem .sell-profit .sell-profit-value.profit-loss,
+.boughtPriceValue.sell-profit-value.profit-loss {
+    color: var(--danger) !important;
+}
+
+.ut-quick-list-panel-view .panelActions .boughtPrice.sell-profit {
+    display: block;
+}

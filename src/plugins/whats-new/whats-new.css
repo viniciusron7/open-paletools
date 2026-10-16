@@ -1,0 +1,26 @@
+#whats-new ul {
+    display: table;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #333;
+    margin-bottom: 10px;
+}
+
+#whats-new ul li:nth-child(even) {
+    background-color: #191919;
+}
+
+#whats-new ul li:nth-child(odd) {
+    background-color: #393939;
+}
+
+#whats-new ul li {
+    padding: 10px;
+    display: table-row;
+    border: 1px solid #333;
+    font-size: larger;
+}
+
+.ut-tile-whatsnew {
+    padding: 10px;
+}

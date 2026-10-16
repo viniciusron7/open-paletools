@@ -1,0 +1,6 @@
+# Prettier also skips everything listed in .gitignore.
+package-lock.json
+# Embedded resources are inlined byte for byte by the build; formatting would change them.
+src/**/*.css
+# Generated data (npm run update:boot-snapshot).
+tests/userscript/boot-fingerprint.snapshot.json

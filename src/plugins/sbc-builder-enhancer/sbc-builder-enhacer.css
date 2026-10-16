@@ -1,0 +1,35 @@
+.sbc-ratings-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sbc-ratings-container>div {
+    width: 45%;
+}
+
+.SBCSquadPanel .ut-sbc-challenge-details-view.no-overflow {
+    overflow: visible;
+}
+
+.sbc-requirements-checklist li.complete::after {
+    color: #07f468;
+}
+
+.sbc-requirements-checklist li::after {
+    content: attr(data-after);
+    margin-left: 0.25em;
+    font-size: 0.9em;
+    color: red;
+}
+
+.sbc-button-container button {
+    order: 10;
+}
+
+.sbc-button-container button#btn-exchange {
+    order: 0;
+}
+
+.sbc-button-container button#btn-squad-builder {
+    order: 1;
+}

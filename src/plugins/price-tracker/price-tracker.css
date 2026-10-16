@@ -1,0 +1,174 @@
+.ut-tab-bar-item.icon-coins {
+    order: 10;
+}
+
+.ut-tab-bar-item.icon-coins:before {
+    content: var(--icon-coins);
+}
+
+.price-tracker-menu-item {
+    order: 4 !important;
+    white-space: nowrap;
+}
+
+.price-tracker-view {
+    padding: 10px 12px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    background-color: var(--body-bk);
+    border-left: 1px solid var(--input-border);
+}
+
+.price-tracker-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.price-tracker-toolbar>*,
+.price-tracker-toolbar .ut-player-search-control .inline-container {
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.price-tracker-toolbar .ut-drop-down-control {
+    display: block;
+    width: 100%;
+    min-height: 36px;
+    margin: 0;
+    font-size: 12px;
+}
+
+.price-tracker-toolbar>button {
+    min-width: 64px;
+    height: 36px;
+    margin: 0;
+    padding: 0 12px;
+}
+
+.price-tracker-view>p {
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.price-tracker-view>p:empty {
+    display: none;
+}
+
+.price-tracker-table {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.price-tracker-table table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.price-tracker-table th,
+.price-tracker-table td {
+    padding: 3px 5px;
+    text-align: left;
+    border-bottom: 1px solid #ffffff20;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.price-tracker-table th {
+    font-size: 10px;
+    white-space: normal;
+    line-height: 13px;
+    opacity: 0.8;
+}
+
+.price-tracker-table .price-tracker-rating {
+    width: 32px;
+}
+
+.price-tracker-table .price-tracker-rarity {
+    width: 28%;
+}
+
+.price-tracker-table .price-tracker-price {
+    width: 80px;
+}
+
+.price-tracker-table .price-tracker-actions {
+    width: 26px;
+    font-size: 0;
+}
+
+.price-tracker-table td:nth-child(2),
+.price-tracker-table th:nth-child(2) {
+    text-align: center;
+}
+
+.price-tracker-table td:nth-child(4),
+.price-tracker-table th:nth-child(4) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.price-tracker-table tbody tr:hover {
+    background: #ffffff0a;
+}
+
+.price-tracker-table .price-tracker-remove {
+    display: block;
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    min-height: 24px;
+    line-height: 24px;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+    color: #fd4821;
+    border: 0;
+    background: none;
+}
+
+@media (max-width: 760px) {
+    .price-tracker-table {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .price-tracker-table table+table thead {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .price-tracker-toolbar {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .price-tracker-toolbar>.ut-player-search-control {
+        grid-column: 1 / -1;
+    }
+}
+
+.price-tracker-toolbar .ut-drop-down-control .inline-container {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.price-tracker-toolbar .ut-drop-down-control .label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

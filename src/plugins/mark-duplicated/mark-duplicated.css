@@ -1,0 +1,25 @@
+.club-duplicated {
+    opacity: 0.5 !important;
+}
+
+.playerResultsList .club-duplicated {
+    opacity: 1 !important;
+}
+
+.playerResultsList .club-duplicated>span:first-child:after {
+    content: var(--icon-duplicate-content);
+    font-family: UltimateTeam-Icons, sans-serif;
+    color: #00ff00;
+    order: 2;
+    position: initial;
+    margin-left: 0;
+}
+
+.playerResultsList .club-untradeable>span:first-child::before {
+    content: var(--icon-untradeable-content);
+    font-family: UltimateTeam-Icons, sans-serif;
+    color: #ffd100;
+    order: 3;
+    position: initial;
+    margin-left: 0;
+}

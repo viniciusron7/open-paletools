@@ -1,0 +1,4 @@
+.ut-squad-building-set-status-label-view.timescompleted::before {
+    content: var(--icon-sbccompleted-content);
+    font-size: 1em;
+}

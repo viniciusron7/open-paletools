@@ -1,0 +1,9 @@
+# Text files use LF everywhere, also in Windows checkouts: Prettier and the tests expect LF.
+* text=auto eol=lf
+# Embedded resources are inlined byte for byte by the build.
+*.css -text
+*.txt -text
+*.svg -text
+*.gz binary
+*.png binary
+*.webp binary

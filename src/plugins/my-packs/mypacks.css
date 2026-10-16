@@ -1,0 +1,156 @@
+.packs-settings-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.phone .packs-settings-container {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#filter-packs {
+    border: 1px solid #4ee6eb;
+    font-size: 14px;
+    padding: 18px;
+    background-color: #262c38;
+    color: #4ee6eb;
+    font-weight: bold;
+    gap: 10px;
+}
+
+.phone .pack-actions {
+    width: 100%;
+}
+
+.pack-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.pack-actions button {
+    flex-basis: 50%;
+}
+
+.phone #filter-packs {
+    width: 100%;
+}
+
+#search-packs {
+    max-width: 20%;
+}
+
+.phone #search-packs {
+    max-width: 100%;
+}
+
+.ut-store-pack-details-view.pack-locked {
+    opacity: 0.8;
+}
+
+.ut-store-pack-details-view.pack-locked::before {
+    position: absolute;
+    content: ' ';
+    filter: var(--lock-icon-red);
+    background: var(--lock-icon-bk);
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.ut-store-pack-details-view.pack-locked button {
+    visibility: hidden;
+}
+
+.ut-store-pack-details-view .pack-lockunlock {
+    position: absolute;
+    display: block;
+    left: 0px;
+    top: 0;
+    width: 24px;
+    height: 24px;
+}
+
+.ut-store-pack-details-view .pack-lockunlock::before {
+    position: absolute;
+    content: ' ';
+    filter: var(--lock-icon-red);
+    background: var(--unlock-icon-bk);
+    width: 100%;
+    height: 100%;
+    background-size: 100%;
+}
+
+.ut-store-pack-details-view.pack-locked .pack-lockunlock::before {
+    filter: var(--lock-icon-red);
+    background: var(--lock-icon-bk);
+    background-size: 100%;
+}
+
+.pack-collector-btn {
+    line-height: 1.5rem;
+    background-color: #f8eede;
+    color: #243962;
+    box-sizing: border-box;
+    display: inline-block;
+    font-family: UltimateTeamCondensed, sans-serif;
+    font-size: 1.6em;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.ut-store-hub-view--content .ut-store-pack-details-view {
+    position: relative;
+}
+
+.pack-counter {
+    position: absolute;
+    display: block;
+    right: 0;
+    top: 0;
+    background-color: #f11656;
+    min-width: 20px;
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding: 4px;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.pack-counter[data-packs-count="1"] {
+    display: none;
+}
+
+.ut-store-pack-details-view.is-untradeable .ut-store-pack-details-view--title span::before {
+    content: var(--icon-untradeablepack-content);
+    color: #d31332;
+}
+
+.ut-store-pack-details-view.is-untradeable .ut-store-pack-details-view--title span::after {
+    display: none;
+}
+
+.ut-store-pack-details-view.is-tradeable .ut-store-pack-details-view--title span::before {
+    content: var(--icon-tradeablepack-content);
+    color: #36b84b;
+}
+
+.ut-store-pack-details-view.is-tradeable .ut-store-pack-details-view--title span::after {
+    display: none;
+}
+
+.ut-store-pack-details-view--title span::before {
+    font-family: UltimateTeam-Icons, sans-serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    text-decoration: none;
+    text-transform: none;
+}

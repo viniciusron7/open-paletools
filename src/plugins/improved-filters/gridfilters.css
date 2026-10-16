@@ -1,0 +1,30 @@
+.inline-list-select:not(.ut-drop-down-control) .inline-list {
+    max-height: 20rem;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    background-color: #151616;
+}
+
+.ut-player-search-control .inline-list {
+    display: block !important;
+}
+
+.inline-list-select:not(.ut-drop-down-control) .inline-list li:hover {
+    background-color: #222222;
+}
+
+.ui-layout-right .inline-list-select .inline-list {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 1920px) {
+    .inline-list-select:not(.ut-drop-down-control) .inline-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .inline-list-select:not(.ut-drop-down-control) .inline-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

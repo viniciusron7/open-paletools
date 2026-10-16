@@ -1,0 +1,19 @@
+# Dependencies (npm ci)
+node_modules/
+
+# Build output (npm run build): rebuild it from src/ instead of committing it
+/dist/
+
+# Local files that are not part of the project
+/paletools.user.js
+/resumo.md
+/archive/
+
+# OS, editor and tool files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/
+*.swp
+*.log

@@ -1,0 +1,29 @@
+.sbc-button-container div.smart-builder-container {
+    order: 2;
+    display: flex;
+    flex-direction: row;
+    margin: 8px auto;
+    width: calc(100% - 16px);
+}
+
+.sbc-button-container div.smart-builder-container button:first-child {
+    flex-grow: 1;
+}
+
+.sbc-button-container div.smart-builder-container button:nth-child(2) {
+    border: 0;
+}
+
+.sbc-smart-builder-dialog {
+    width: 100%;
+}
+
+.sbc-smart-builder-dialog > div {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.sbc-smart-builder-dialog > div > label {
+    flex-grow: 1;
+}

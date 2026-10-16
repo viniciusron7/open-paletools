@@ -1,0 +1,14 @@
+
+                      .paletools-bulk-buy-confirmation{max-width:760px;max-height:85vh;overflow:auto}
+                      .bulk-buy-row{display:grid;grid-template-columns:80px minmax(140px,1fr) 100px auto;gap:12px;align-items:end;padding:12px 0;border-bottom:1px solid #ffffff26}
+                      .bulk-buy-row label{display:flex;flex-direction:column;gap:6px;font-size:14px}
+                      .bulk-buy-row input[type=number]{width:100%;min-width:0;border-radius:4px}
+                      .bulk-buy-row button,.bulk-buy-add{padding:10px;border:1px solid #4ee6eb;background:#253746;color:white;border-radius:4px;cursor:pointer;font:inherit}
+                      .bulk-buy-add{margin-top:12px;min-width:44px;font-size:20px}
+                      .bulk-buy-error{color:#ffb6aa;min-height:1.5em}
+                      .paletools-bulk-buy-status{max-height:65vh;overflow:auto}
+                      .paletools-bulk-buy-status h2{font-size:18px;margin-bottom:12px}
+                      .paletools-bulk-buy-status ul{margin:12px 0;line-height:1.6;max-height:32vh;overflow:auto}
+                      .paletools-bulk-buy-confirmation button:disabled{opacity:.5;cursor:default}
+                      @media(max-width:600px){.bulk-buy-row{grid-template-columns:1fr 1fr}.bulk-buy-row button{min-height:40px}}
+                    

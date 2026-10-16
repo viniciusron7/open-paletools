@@ -1,0 +1,9 @@
+#babysitter-sbc-delay-progressbar {
+    position: fixed;
+    top: 0;
+    width: 0%;
+    height: 1px;
+    border-top-style: solid;
+    border-top-width: 10px;
+    border-top-color: #FF335C;
+}

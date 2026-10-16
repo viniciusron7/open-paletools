@@ -1,0 +1,11 @@
+
+                              .paletools-player-snipe-confirmation{max-width:460px;width:calc(100% - 48px);box-sizing:border-box;background:#1d272f;color:#fff;border:1px solid #4ee6eb;border-radius:8px;padding:24px;font-family:inherit}
+                              .paletools-player-snipe-confirmation::backdrop{background:rgba(0,0,0,.75)}
+                              .paletools-player-snipe-confirmation h2{font-size:1.4rem;margin-bottom:16px}
+                              .paletools-player-snipe-confirmation p{margin:12px 0;line-height:1.5}
+                              .player-snipe-actions{display:flex;gap:12px;margin-top:20px}
+                              .player-snipe-actions button,.paletools-player-snipe-status button{background:#4ee6eb;color:#101b22;border:0;border-radius:4px;padding:10px 16px;cursor:pointer;font:inherit}
+                              .paletools-player-snipe-status{position:fixed;z-index:100000;top:12px;right:12px;max-width:min(420px,calc(100vw - 48px));padding:16px;background:#1d272f;color:#fff;border:1px solid #4ee6eb;border-radius:8px;box-shadow:0 4px 20px #0008}
+                              .paletools-player-snipe-status p{margin-bottom:12px;line-height:1.4}
+                              .player-snipe-actions button:focus-visible,.paletools-player-snipe-status button:focus-visible{outline:3px solid white;outline-offset:3px}
+                            

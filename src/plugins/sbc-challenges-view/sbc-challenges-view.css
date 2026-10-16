@@ -1,0 +1,29 @@
+.ut-sbc-challenges-view--challenges.grid-mode {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+}
+
+.ut-sbc-challenges-view--challenges.grid-mode .ut-sbc-challenge-table-row-view.complete {
+    opacity: 0.3;
+    background-color: #36b84b;
+}
+
+.ut-sbc-challenges-view--challenges.grid-mode .ut-sbc-challenge-table-row-view.in-progress {
+    background-color: #0b96ff;
+}
+
+.ut-sbc-challenges-view--challenges.grid-mode .ut-sbc-challenge-table-row-view .ut-sbc-challenge-table-row-view--content {
+    display: none;
+}
+
+.ut-sbc-challenges-view--challenges.grid-mode .ut-sbc-challenge-table-row-view::after {
+    display: none;
+}
+
+.ut-sbc-challenge-table-row-view.requires-totw {
+    background-image: url(https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/SearchFilters/level/SP.png);
+    background-size: 32px;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+}

@@ -1,0 +1,42 @@
+.player-definition-id { position: absolute; bottom: 0; }
+.saved-filters { display: inline-block; }
+.saved-filters > input {display: inline-block; width: auto; }
+.saved-filters > button { display: inline-block; margin-left: 8px; font-size: 16px; }
+.saved-filters > div { float: right; margin-left: 8px;}
+.phone .saved-filters > div { float: none; margin-left: 0; margin-top: 4px;}
+.extended-filters { margin-bottom: 10px;}
+
+.ui-layout-right .ut-market-search-filters-view .saved-filters {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin: 0 !important;
+}
+
+.ui-layout-right .ut-market-search-filters-view .saved-filters input {
+    width: 100%;
+}
+
+.ui-layout-right .ut-market-search-filters-view .saved-filters > button,
+.ui-layout-right .ut-market-search-filters-view .saved-filters > div {
+    margin: 0 !important;
+}
+
+.SearchResults.hide-duplicates li.listFUTItem:not(.has-auction-data) {
+    display: none;
+}
+
+.holographic-filter {
+     flex-direction: row;
+    display: flex;
+    background: #233144;
+    border: 1px solid #deded826;
+    line-height: 48px;
+    align-items: center;
+    width: calc(50% - 24px);
+    gap: 10px;
+    justify-content: space-between;
+    padding-left: 8px;
+    padding-right: 8px;
+    order: 30;
+}

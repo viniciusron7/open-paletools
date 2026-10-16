@@ -1,0 +1,18 @@
+.item-value-container.external-market-price .item-value .value::before,
+.ut-section-header-view .title .currency-coins::before {
+    background-position: left;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 100%;
+    display: inline-block;
+    height: 1em;
+    vertical-align: middle;
+    width: 1em;
+    background-image: url(https://www.ea.com/es-es/ea-sports-fc/ultimate-team/web-app/images/coinIcon.png);
+    margin-top: -.15em;
+    margin-right: 4px;
+}
+
+.item-values-container .squad-value .squad-price {
+    order: 0
+}

@@ -1,0 +1,17 @@
+.grading-score .item-value .value::before {
+    background-image: url(https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/sbc/dustpoint.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    content: ' '
+}
+
+.item-values-container .squad-value .squad-grading {
+    order: 1
+}
+
+.ut-transfer-list-view .grading-score {
+    display: none;
+}

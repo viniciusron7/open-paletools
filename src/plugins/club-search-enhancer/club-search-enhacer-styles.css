@@ -1,0 +1,29 @@
+/*.club-search-ratings-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.club-search-ratings-container > div {
+    width: 45%;
+}
+
+.club-search-ratings-container >  div:not(.ut-toggle-control-group-view) {
+    width: 45%;
+}*/
+
+.ut-toggle-control-group-view {
+    display: flex;
+    flex-direction: column;
+}
+
+.ut-toggle-cell-view {
+    order: 2;
+}
+
+.ut-toggle-cell-view:first-child {
+    order: 0;
+}
+
+.ut-toggle-cell-view.sort-tradeable {
+    order: 1;
+}

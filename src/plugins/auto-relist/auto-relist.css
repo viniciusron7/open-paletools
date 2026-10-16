@@ -1,0 +1,14 @@
+.ut-section-header-view h2.title {
+    order: -2;
+}
+
+.auto-relist {
+    order: -1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.auto-relist .ut-toggle-control {
+    max-width: 2.5rem;
+}

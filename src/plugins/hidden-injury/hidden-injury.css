@@ -1,0 +1,31 @@
+.player .hidden-injury {
+    display: block;
+}
+
+.ut-unassigned-view .player .hidden-injury,
+.form-modal .player .hidden-injury,
+.ut-pack-animation-view .player .hidden-injury,
+.ui-layout-left+.ut-navigation-container-view .hidden-injury {
+    display: none;
+}
+
+.player .hidden-injury::before {
+    font-family: 'UltimateTeam-Icons';
+    position: absolute;
+    content: var(--icon-injury-content);
+    opacity: 0.8;
+    /* left: -11px; */
+    opacity: 0.8;
+    top: calc(50% - 20px);
+    color: #ff0000;
+    line-height: 40px;
+    font-size: 40px;
+    background: white;
+    z-index: 100000;
+    left: calc(50% - 20px);
+    border-radius: 10px;
+}
+
+.ut-unassigned-view .ut-item-player-status--restricted {
+    display: none;
+}

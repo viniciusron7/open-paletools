@@ -1,0 +1,45 @@
+li.listFUTItem input[type="checkbox"] {
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: #21242e;
+  /* Not removed via appearance */
+  margin: 0;
+
+  font: inherit;
+  color: currentColor;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #4ee6eb;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+  position:absolute;
+  top:3px;
+  right: 7px;
+  z-index: 5;
+}
+
+li.listFUTItem input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 10ms transform ease-in-out;
+  box-shadow: inset 1em 1em #4ee6eb;
+  /* Windows High Contrast Mode */
+  background-color: CanvasText;
+}
+
+li.listFUTItem input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+li.listFUTItem input[type="checkbox"]:focus {
+  outline: none;
+}

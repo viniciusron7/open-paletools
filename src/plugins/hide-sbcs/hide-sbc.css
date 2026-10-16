@@ -1,0 +1,15 @@
+.sbc-set--buttons .btn-hide,
+.sbc-set--buttons .btn-show {
+    color: white;
+    height: 1.5rem;
+    font-family: UltimateTeam-Icons, sans-serif;
+    font-size: 24px;
+}
+
+.sbc-set--buttons .btn-show::after {
+    content: var(--icon-eye);
+}
+
+.sbc-set--buttons .btn-hide::after {
+    content: var(--icon-eye-closed);
+}
