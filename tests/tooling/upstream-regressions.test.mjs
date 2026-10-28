@@ -95,3 +95,41 @@ test("a constant whose reads all become an expression is not moved to its declar
   // declaration, which would evaluate IMG.logo before IMG exists.
   assert.doesNotMatch(result.port.text, /LOGO\s*=\s*IMG/);
 });
+
+// Cases found by porting a heavily customized copy of this project (its own plugins, removed
+// and rewritten built-in modules).
+
+test("a class used only by a statement the project rewrote keeps its correspondence", () => {
+  const base =
+    "class _0xS { m() { return 1; } }\nconst _0xdb = { s: new _0xS(), open() { return 1; } };\nuse(_0xdb);";
+  const target =
+    "class Store { m() { return 1; } }\nconst db = { s: new Store(), ready: false, async open() { this.ready = true; return 2; }, close() {} };\nuse(db);";
+  const other = base.replace("m() { return 1; }", "m() { return 3; }");
+  const result = mergeBothWays({ base, target, other });
+  assertConflicts(result.plan, []);
+  assertEquivalent(result.expected.text, result.port.text, "both directions");
+  assert.match(result.port.text, /class Store \{\s*m\(\) \{\s*return 3;/);
+});
+
+test("where the project removed code the release changed, both sides keep the removal", () => {
+  const base = "function _0xa() { return 1; }\nfunction _0xb() { return 2; }\n_0xa();\n_0xb();";
+  const target = "function keep() { return 1; }\nkeep();";
+  const other = base.replace("return 2;", "return 20;");
+  const result = mergeBothWays({ base, target, other });
+  assertConflicts(result.plan, ["changed-but-removed"]);
+  assertEquivalent(result.expected.text, result.port.text, "port and expected program agree");
+  assert.doesNotMatch(result.expected.text, /return 20/);
+});
+
+test("a constant the release changes is also read with its new value by the project's own code", () => {
+  const base =
+    'const _0xv = "1.0";\nfunction _0xa() { return _0xv; }\nfunction _0xb() { return "v" + _0xv; }\n_0xa();\n_0xb();';
+  const target =
+    'const VERSION = "1.0";\nfunction a() { return VERSION; }\nfunction b() { return "v" + VERSION; }\nfunction mine() { return VERSION.split("."); }\na();\nb();\nmine();';
+  const other = base.replace('"1.0"', '"2.0"');
+  const result = mergeBothWays({ base, target, other });
+  assertConflicts(result.plan, []);
+  assertEquivalent(result.expected.text, result.port.text, "port and expected program agree");
+  assert.match(result.port.text, /const VERSION = "2.0"/);
+  assert.match(result.port.text, /return VERSION;/);
+});

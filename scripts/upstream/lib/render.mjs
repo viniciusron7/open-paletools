@@ -212,7 +212,16 @@ function needsParentheses(node, parent, key) {
  * initializer), text, replacement (the new initializer node when it was replaced whole) }] and
  * makes `render` write the reads unchanged.
  */
-export function createRenderer({ target, other, overlay, locate, rename, renamePrivate }) {
+export function createRenderer({
+  target,
+  other,
+  overlay,
+  locate,
+  rename,
+  renamePrivate,
+  constantFor = () => null,
+  ownCode = () => false,
+}) {
   const otherNodes = new WeakSet();
   {
     const stack = [other.program];
@@ -235,6 +244,20 @@ export function createRenderer({ target, other, overlay, locate, rename, renameP
     node.id ? { ...node, id: { ...node.id, name: rename(node.id) ?? node.id.name } } : node;
   /** astring generator printing other-side nodes with target names. */
   const foreignGenerator = Object.assign(Object.create(GENERATOR), {
+    // An inlined constant whose value the other side changed: the merged program's value.
+    ...Object.fromEntries(
+      ["Literal", "TemplateLiteral", "UnaryExpression", "ObjectExpression", "ArrayExpression"].map(
+        (type) => [
+          type,
+          function (node, state) {
+            const replacement = constantFor(node);
+            if (replacement && replacement !== node)
+              return this[replacement.type](replacement, state);
+            return GENERATOR[type].call(this, node, state);
+          },
+        ],
+      ),
+    ),
     // astring prints cases and catch clauses inline (no SwitchCase/CatchClause
     // generator): give them their own, so that they can be printed alone and so that
     // printComposed routes them through render() (which reads the overlay).
@@ -371,8 +394,29 @@ export function createRenderer({ target, other, overlay, locate, rename, renameP
         if (!byConstant.has(node[INLINED_FROM])) byConstant.set(node[INLINED_FROM], []);
         byConstant.get(node[INLINED_FROM]).push(node);
       }
+    const allReads = new Map(); // constant name -> every inlined copy of it in the target
+    if (byConstant.size) {
+      const stack = [target.program];
+      while (stack.length) {
+        const node = stack.pop();
+        if (node[INLINED_FROM]) {
+          if (!allReads.has(node[INLINED_FROM])) allReads.set(node[INLINED_FROM], []);
+          allReads.get(node[INLINED_FROM]).push(node);
+        }
+        for (const key of childKeys(node)) {
+          const value = node[key];
+          if (Array.isArray(value)) for (const item of value) isNode(item) && stack.push(item);
+          else if (isNode(value)) stack.push(value);
+        }
+      }
+    }
     for (const [name, reads] of byConstant) {
-      if (reads.length !== target.inlined?.get(name)?.references) continue;
+      // Every read changes, except reads in the target's own code (code the base does not
+      // have, e.g. this project's plugins): those follow the constant's new value.
+      const changedReads = new Set(reads);
+      const others = (allReads.get(name) ?? []).filter((node) => !changedReads.has(node));
+      if (!others.every((node) => ownCode(node))) continue;
+      if (reads.length + others.length !== target.inlined?.get(name)?.references) continue;
       // only a primitive literal may move to the declaration (evaluation order).
       if (!reads.every((node) => overlay.replaced.has(node) && isScalar(overlay.effective(node))))
         continue;

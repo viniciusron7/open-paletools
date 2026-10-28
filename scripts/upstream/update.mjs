@@ -520,6 +520,7 @@ export async function update({
   log("writing src/...");
   const applied = applyPlanToSources({
     root,
+    B,
     O,
     T,
     alignO: portO,

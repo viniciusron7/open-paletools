@@ -20,7 +20,7 @@ import { ASSET_TYPES, assetType, readManifest } from "../../lib/modules.mjs";
 import { declaredTopVariables, nodeKeys } from "./align.mjs";
 import { INLINED_DECLARATION, ORIGIN, RAW } from "./program.mjs";
 import { createRenderer, Overlay } from "./render.mjs";
-import { createRenamers } from "./whole-text.mjs";
+import { createOwnCode, createRenamers } from "./whole-text.mjs";
 
 const keyOf = (node) => `${node.type}:${node.start}:${node.end}`;
 
@@ -174,6 +174,7 @@ function literalValue(node) {
  */
 export function applyPlanToSources({
   root,
+  B = null,
   O,
   T,
   alignO,
@@ -186,7 +187,9 @@ export function applyPlanToSources({
   const overlay = new Overlay(O);
   for (const operation of plan.ops) overlay.apply(operation);
   const missing = [];
-  const { rename, renamePrivate } = createRenamers({
+  const { rename, renamePrivate, constantFor } = createRenamers({
+    B,
+    TG: O,
     OT: T,
     alignTG: alignO,
     alignOT: alignT,
@@ -195,6 +198,8 @@ export function applyPlanToSources({
   const renderer = createRenderer({
     target: O,
     other: T,
+    constantFor,
+    ownCode: createOwnCode(O, alignO),
     overlay,
     locate: mapping.locate,
     rename,

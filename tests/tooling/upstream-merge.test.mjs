@@ -535,7 +535,7 @@ test("a translation table (an object read once) is changed where it is declared"
 // ---------------------------------------------------------------------------------------------
 // Conflicts
 // ---------------------------------------------------------------------------------------------
-test("both sides change the same literal: one conflict, the target keeps its version", () => {
+test("both sides change the same literal: one conflict, this project's version is kept on both sides", () => {
   const merged = mergeBothWays({
     base: `function _0xd(_0xp) { return wait(_0xp, 500); } _0xd(1);`,
     target: `function delay(ms) { return wait(ms, 750); } delay(1);`,
@@ -555,13 +555,9 @@ test("both sides change the same literal: one conflict, the target keeps its ver
   );
   assert.deepEqual(merged.plan.ops, []);
   assert.equal(merged.port.text, bundle(`function delay(ms) { return wait(ms, 750); } delay(1);`));
-  assertEquivalent(bundle(`function f(x) { return wait(x, 1000); } f(1);`), merged.expected.text);
-  // The conflict is the only difference (as `npm run upstream:verify` compares, with a hole).
-  assert(!verifyEquivalence(merged.expected.text, merged.port.text).equivalent);
-  const start = merged.expected.text.indexOf("1000");
-  assertEquivalent(merged.expected.text, merged.port.text, "with a hole at the conflict", {
-    holes: [[start, start + 4]],
-  });
+  // At a conflict the expected program follows this project too, so both agree without holes.
+  assertEquivalent(bundle(`function f(x) { return wait(x, 750); } f(1);`), merged.expected.text);
+  assertEquivalent(merged.expected.text, merged.port.text, "port and expected program agree");
 });
 
 test("the release removes a statement the project changed: removed-but-changed", () => {

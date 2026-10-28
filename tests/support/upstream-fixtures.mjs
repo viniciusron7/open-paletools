@@ -289,7 +289,16 @@ export async function portRelease(root, { baseBody, releaseBody, releaseId = 909
     alignOT: alignO,
     otIsTheirs: false,
   }).text;
-  const applied = applyPlanToSources({ root, O, T, alignO, alignT, plan, releaseVersion: "2.0.0" });
+  const applied = applyPlanToSources({
+    root,
+    B,
+    O,
+    T,
+    alignO,
+    alignT,
+    plan,
+    releaseVersion: "2.0.0",
+  });
   const releaseGlobals = new Set(
     T.scopeManager.globalScope.through.map((ref) => ref.identifier.name),
   );

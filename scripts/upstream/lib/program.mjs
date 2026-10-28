@@ -515,13 +515,20 @@ export function findMainModuleId(program) {
 function bindingsOf(program) {
   const scopeManager = analyze(program, { ecmaVersion: 2022, sourceType: "script" });
   const bindings = new Map(); // Identifier node -> eslint-scope Variable | "global"
+  const innerBindings = new Map(); // declaration name -> the binding of its own (class) scope
   for (const scope of scopeManager.scopes) {
+    // Scopes come outer first. A class declaration's name is declared twice (in the enclosing
+    // scope and, for the class body, in its own class scope): its identifier names the outer
+    // binding, the one the rest of the program uses; the inner one, which the class body reads,
+    // is kept in innerBindings.
     for (const variable of scope.variables)
-      for (const identifier of variable.identifiers) bindings.set(identifier, variable);
+      for (const identifier of variable.identifiers)
+        if (!bindings.has(identifier)) bindings.set(identifier, variable);
+        else if (bindings.get(identifier) !== variable) innerBindings.set(identifier, variable);
     for (const reference of scope.references)
       bindings.set(reference.identifier, reference.resolved ?? "global");
   }
-  return { scopeManager, bindings };
+  return { scopeManager, bindings, innerBindings };
 }
 
 /**
@@ -548,7 +555,7 @@ export function prepareProgram(
   }
   fillMissingRanges(program);
   const inlined = inlineConstants(program, factory, { keepDeclarations: keepInlinedDeclarations });
-  const { scopeManager, bindings } = bindingsOf(program);
+  const { scopeManager, bindings, innerBindings } = bindingsOf(program);
   const topVariables = new Set(scopeManager.acquire(factory).variables);
   return {
     label,
@@ -563,6 +570,7 @@ export function prepareProgram(
     inlined,
     scopeManager,
     bindings,
+    innerBindings,
     topVariables,
   };
 }

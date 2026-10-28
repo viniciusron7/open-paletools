@@ -18,6 +18,7 @@
 // members, properties, array elements, arguments), keyed by property name when it can.
 import { isNode } from "../../lib/ast.mjs";
 import { createDigester, similarity, wordsOf } from "./hash.mjs";
+import { INLINED_FROM } from "./program.mjs";
 import { indexParents } from "./render.mjs";
 
 /** A one-to-one correspondence between the bindings (or private names) of two sides. */
@@ -60,6 +61,7 @@ export class VarMap {
     copy.xy = new Map(this.xy);
     copy.yx = new Map(this.yx);
     copy.conflicts = this.conflicts;
+    if (this.constants) copy.constants = this.constants.clone();
     return copy;
   }
 }
@@ -117,11 +119,15 @@ export function pairVariables(x, y, X, Y, vars, privates = null, { commit = "con
   const classesX = [];
   const classesY = [];
   let shapeMismatch = false;
+  const constantProposals = [];
   const visit = (a, b) => {
     if (!isNode(a) || !isNode(b)) {
       if (isNode(a) !== isNode(b)) shapeMismatch = true;
       return;
     }
+    // Inlined copies read at corresponding places: the constants correspond (program.mjs).
+    if (a[INLINED_FROM] && b[INLINED_FROM])
+      constantProposals.push([a[INLINED_FROM], b[INLINED_FROM]]);
     if (a.type !== b.type) {
       shapeMismatch = true;
       return;
@@ -131,6 +137,9 @@ export function pairVariables(x, y, X, Y, vars, privates = null, { commit = "con
       const bindingB = Y.bindings.get(b);
       if (bindingA && bindingA !== "global" && bindingB && bindingB !== "global")
         proposals.push([bindingA, bindingB]);
+      const innerA = X.innerBindings?.get(a);
+      const innerB = Y.innerBindings?.get(b);
+      if (innerA && innerB) proposals.push([innerA, innerB]);
       return;
     }
     if (a.type === "PrivateIdentifier") {
@@ -171,6 +180,9 @@ export function pairVariables(x, y, X, Y, vars, privates = null, { commit = "con
       if (!privates.accepts(a, b) || !localPrivate.propose(a, b)) consistent = false;
     }
   if (consistent || commit === "partial") {
+    vars.constants ??= new VarMap();
+    for (const [a, b] of constantProposals)
+      if (vars.constants.accepts(a, b)) vars.constants.propose(a, b);
     for (const [a, b] of proposals) if (vars.accepts(a, b)) vars.propose(a, b);
     if (privates)
       for (const [a, b] of privateProposals) if (privates.accepts(a, b)) privates.propose(a, b);
@@ -522,7 +534,14 @@ export function alignTopLevel(X, Y, { similarityThreshold = 0.35 } = {}) {
  * their bindings; lists are aligned (alignList) and their paired elements visited recursively.
  */
 export function learnTolerant(x, y, X, Y, digestX, digestY, vars, privates, depth = 0) {
-  if (!isNode(x) || !isNode(y) || x.type !== y.type || depth > 60) return;
+  if (!isNode(x) || !isNode(y) || depth > 60) return;
+  // Constants read at corresponding places correspond, also when one side changed the value.
+  if (x[INLINED_FROM] && y[INLINED_FROM]) {
+    vars.constants ??= new VarMap();
+    if (vars.constants.accepts(x[INLINED_FROM], y[INLINED_FROM]))
+      vars.constants.propose(x[INLINED_FROM], y[INLINED_FROM]);
+  }
+  if (x.type !== y.type) return;
   if (digestX(x) === digestY(y)) {
     pairVariables(x, y, X, Y, vars, privates, { commit: "partial" });
     return;
@@ -538,6 +557,9 @@ export function learnTolerant(x, y, X, Y, digestX, digestY, vars, privates, dept
       vars.accepts(bindingX, bindingY)
     )
       vars.propose(bindingX, bindingY);
+    const innerX = X.innerBindings?.get(x);
+    const innerY = Y.innerBindings?.get(y);
+    if (innerX && innerY && vars.accepts(innerX, innerY)) vars.propose(innerX, innerY);
     return;
   }
   for (const key of nodeKeys(x)) {

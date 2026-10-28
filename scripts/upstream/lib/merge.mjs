@@ -106,6 +106,10 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
   };
   const conflict = (kind, path, b, tg, ot, detail = "") =>
     conflicts.push({ kind, path, detail, base: b, target: tg, other: ot });
+  // Where both changed the same code, src/ keeps this project's version (the port leaves TG,
+  // src/, as it is there). The expected program follows the same rule, so that the port and the
+  // expected program agree at the conflicts too: when OT is this project, OT's version wins.
+  const projectWins = !otIsTheirs;
 
   /** OT did not change `ot` relative to `b` (same shape, consistent bindings). */
   const unchangedOT = (b, ot) =>
@@ -114,8 +118,19 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
     dB(b) === dTG(tg) && pairVariables(b, tg, B, TG, varsTG, privatesTG, { commit: "consistent" });
   const sameChange = (tg, ot) => dTG(tg) === dOT(ot);
 
-  function mergeNode(b, tg, ot, path) {
+  /** The function of a method (`m() {}`, get/set): it is written as part of its property. */
+  const isMethodValue = (parent, key) =>
+    key === "value" &&
+    ((parent?.type === "Property" && (parent.method || parent.kind !== "init")) ||
+      parent?.type === "MethodDefinition");
+
+  function mergeNode(b, tg, ot, path, parents = null) {
     if (unchangedOT(b, ot)) return;
+    // A method's function replaced whole (e.g. made async) is replaced with its property.
+    const replaceWhole = () =>
+      parents && isMethodValue(parents.tg, parents.key) && isMethodValue(parents.ot, parents.key)
+        ? ops.push({ op: "replace", node: parents.tg, with: parents.ot, path })
+        : ops.push({ op: "replace", node: tg, with: ot, path });
     const tgUnchanged = unchangedTG(b, tg);
     if (!tgUnchanged && sameChange(tg, ot)) return;
     const atomic =
@@ -128,16 +143,19 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
       b.type === "ThisExpression" ||
       b.type === "Super";
     if (atomic || !sameScalars(b, ot)) {
-      if (tgUnchanged) ops.push({ op: "replace", node: tg, with: ot, path });
+      if (tgUnchanged) replaceWhole();
       else if (!atomic && sameScalars(tg, ot) && sameScalars(b, tg) === false) {
         // Both changed the same scalar (e.g. an operator) and possibly children: merge children.
         mergeChildren(b, tg, ot, path);
-      } else conflict("both-changed", path, b, tg, ot);
+      } else {
+        conflict("both-changed", path, b, tg, ot);
+        if (projectWins) replaceWhole();
+      }
       return;
     }
     if (!sameScalars(b, tg)) {
       // TG changed a scalar (operator, kind...) and OT changed something inside.
-      if (tgUnchanged) ops.push({ op: "replace", node: tg, with: ot, path });
+      if (tgUnchanged) replaceWhole();
       else mergeChildren(b, tg, ot, path);
       return;
     }
@@ -153,6 +171,7 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
       if (Array.isArray(vb) || Array.isArray(vot) || Array.isArray(vtg)) {
         if (!Array.isArray(vb) || !Array.isArray(vot) || !Array.isArray(vtg)) {
           conflict("shape", `${path}.${key}`, b, tg, ot);
+          if (projectWins) ops.push({ op: "replace", node: tg, with: ot, path });
           continue;
         }
         mergeList(b, tg, ot, key, `${path}.${key}`);
@@ -163,7 +182,7 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
       const presentOT = isNode(vot);
       if (!presentB && !presentOT) continue;
       if (presentB && presentOT && presentTG) {
-        mergeNode(vb, vtg, vot, `${path}.${key}`);
+        mergeNode(vb, vtg, vot, `${path}.${key}`, { tg, ot, key });
         continue;
       }
       // A child appears or disappears (e.g. an `else`, an initializer, a default value).
@@ -178,7 +197,17 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
           path: `${path}.${key}`,
         });
       else if (presentTG === presentOT && (!presentOT || sameChange(vtg, vot))) continue;
-      else conflict("both-changed", `${path}.${key}`, vb ?? b, vtg ?? tg, vot ?? ot);
+      else {
+        conflict("both-changed", `${path}.${key}`, vb ?? b, vtg ?? tg, vot ?? ot);
+        if (projectWins)
+          ops.push({
+            op: "setChild",
+            node: tg,
+            key,
+            value: presentOT ? vot : null,
+            path: `${path}.${key}`,
+          });
+      }
     }
   }
 
@@ -198,6 +227,7 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
     const tgOf = new Map(alignedTG.pairs.map(([i, j, kind]) => [i, { j, kind }]));
     const otOf = new Map(alignedOT.pairs.map(([i, j, kind]) => [i, { j, kind }]));
     const baseOfOT = new Map(alignedOT.pairs.map(([i, j]) => [j, i]));
+    const revivedElements = [];
     for (let i = 0; i < listB.length; i++) {
       const inTG = tgOf.get(i);
       const inOT = otOf.get(i);
@@ -207,13 +237,18 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
         if (listB[i] === null) continue;
         if (inTG.kind === "same" && unchangedTG(listB[i], listTG[inTG.j]))
           ops.push({ op: "remove", parent: tg, key, node: listTG[inTG.j], path: elementPath });
-        else conflict("removed-but-changed", elementPath, listB[i], listTG[inTG.j], null);
+        else {
+          conflict("removed-but-changed", elementPath, listB[i], listTG[inTG.j], null);
+          if (projectWins)
+            ops.push({ op: "remove", parent: tg, key, node: listTG[inTG.j], path: elementPath });
+        }
         continue;
       }
       if (inOT.kind === "same" && (listB[i] === null || unchangedOT(listB[i], listOT[inOT.j])))
         continue;
       if (!inTG) {
         conflict("changed-but-removed", elementPath, listB[i], null, listOT[inOT.j]);
+        if (projectWins) revivedElements.push(inOT.j); // inserted again, with OT's new elements
         continue;
       }
       if (listB[i] === null || listTG[inTG.j] === null || listOT[inOT.j] === null) {
@@ -224,7 +259,7 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
       mergeNode(listB[i], listTG[inTG.j], listOT[inOT.j], elementPath);
     }
     // Elements OT added: insert them between the TG counterparts of their neighbours.
-    const added = alignedOT.added;
+    const added = [...alignedOT.added, ...revivedElements].sort((x, y) => x - y);
     if (!added.length) return;
     const runs = [];
     for (const j of added) {
@@ -313,8 +348,11 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
     if (!inOT) {
       if (!inTG) continue;
       const used = inTG.kind === "modified" ? [] : usedByOwnCode(inTG.y);
-      if (inTG.kind === "modified") conflict("removed-but-changed", path, b, inTG.y, null);
-      else if (used.length)
+      if (inTG.kind === "modified") {
+        conflict("removed-but-changed", path, b, inTG.y, null);
+        if (projectWins)
+          ops.push({ op: "remove", parent: topParent, key: "body", node: inTG.y, path });
+      } else if (used.length)
         conflict(
           "removed-but-used",
           path,
@@ -348,6 +386,7 @@ export function planMerge({ B, TG, OT, alignTG, alignOT, otIsTheirs }) {
     }
     if (!inTG) {
       conflict("changed-but-removed", path, b, null, inOT.y);
+      if (projectWins) revived.add(inOT.y);
       continue;
     }
     mergeNode(b, inTG.y, inOT.y, path);
