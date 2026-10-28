@@ -7,7 +7,8 @@
  * - `init` delegates to `AlbumViewController.prototype.init` (which calls the overridden
  *   `_restoreSelection` and sets `initialized`) before observing the gallery observables;
  *   `dealloc` unobserves them before the album `dealloc`.
- * - Shares the `requestId`/`active` guards of the album controller.
+ * - Shares the `requestId`/`active` guards, the items loader (`_startItemsLoader` /
+ *   `_stopItemsLoader`) and the Market/Buy buttons (gallery `buyEnabled`) of the album controller.
  *   `_requestItems(autoSelect, clearCache)`: a set change auto-selects, refresh clears
  *   `galleryCriteriaSearchCache`.
  * - Search results are filtered again with the set criteria (set 113: foil subtype 0 or 1);
@@ -36,7 +37,6 @@ import {
   pickBestGalleryCardIds,
 } from "./gallery-grading.js";
 import { GalleryView } from "./gallery-view.js";
-import { hideLoadingShield, showLoadingShield } from "../../webapp/loading-shield.js";
 
 const translateGalleryControllerText = (translationKey) =>
   translate("plugins.gallery." + translationKey);
@@ -117,6 +117,7 @@ GalleryViewControllerImpl.prototype._requestItems = async function (
   if (!this.active) {
     return;
   }
+  this._stopItemsLoader();
   const requestId = ++this.requestId;
   const view = this.getView();
   this.albumEntries = [];
@@ -124,16 +125,14 @@ GalleryViewControllerImpl.prototype._requestItems = async function (
   this.updateItemList([], true);
   view.setGallerySet(this.selectedSet);
   if (!configuration.enabled || !configuration.plugins.gallery.enabled) {
-    view.setStatus(translateGalleryControllerText("disabled"));
-    return void hideLoadingShield();
+    return void view.setStatus(translateGalleryControllerText("disabled"));
   }
   if (!this.selectedSet) {
-    view.setStatus(translateGalleryControllerText("selectSet"));
-    return void hideLoadingShield();
+    return void view.setStatus(translateGalleryControllerText("selectSet"));
   }
   const selectedSet = this.selectedSet;
   view.setStatus(translateGalleryControllerText("loading"));
-  showLoadingShield();
+  const releaseItemsLoader = this._startItemsLoader();
   try {
     if (requestId !== this.requestId) {
       return;
@@ -193,9 +192,7 @@ GalleryViewControllerImpl.prototype._requestItems = async function (
       view.setLoadError(translateGalleryControllerText("error"));
     }
   } finally {
-    if (requestId === this.requestId) {
-      hideLoadingShield();
-    }
+    releaseItemsLoader();
   }
 };
 

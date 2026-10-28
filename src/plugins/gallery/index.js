@@ -1,7 +1,9 @@
 /**
  * Gallery plugin definition `galleryPlugin` (order 10005), installed by the plugin list in
  * src/bootstrap/boot.js: injects the album and gallery styles and adds a Gallery home-hub tile
- * and a settings button that open the gallery (`openGallery`).
+ * and a settings button that open the gallery (`openGallery`). The settings also hold
+ * `buyEnabled` (the Buy button of the album view, 27.2.1, off by default; switching it on asks
+ * `plugins.dangerous` and stays off if not confirmed).
  *
  * Hooks:
  * - After-hook (`hookPrototypeMethod`) on `UTHomeHubView._generate`, always registered in `run()`
@@ -112,6 +114,18 @@ galleryPluginDefinition = {
         gallerySettings.enabled = isEnabled;
         persistConfiguration();
       });
+      appendToggle(
+        menuContainer,
+        "plugins.gallery.settings.buyEnabled",
+        gallerySettings.buyEnabled,
+        (isEnabled) => {
+          if (isEnabled && !confirm(translate("plugins.dangerous"))) {
+            return false;
+          }
+          gallerySettings.buyEnabled = isEnabled;
+          persistConfiguration();
+        },
+      );
       const openButton = createElement("button", {
         className: "btn-standard",
         type: "button",

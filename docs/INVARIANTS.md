@@ -36,15 +36,27 @@ This document gathers the rules that a change can break without noticing. Read t
 
 `src/plugins/market-automation/sessions.js` is the only owner of `activePlayerSnipeSession`, `playerSnipeConfirmation`, `activeBulkBuySession` and `bulkBuyConfirmation`. While any of them exists, neither automation opens a dialog or starts; both buttons are disabled and every place that changes one of these states updates both. That is why this state and the functions that assign it live in a single module (splitting them would create an import cycle).
 
-## 5. Persisted data and external identifiers
+## 5. Upstream automations that buy (Paletools 27.2.1)
+
+These come from the official release and are **not** part of the mutual exclusion of section 4: nothing stops them from running while Player Snipe or Bulk Buy runs, and they share the Transfer Market limits of the account.
+
+- **Auto Snipe** (`src/plugins/auto-snipe/`): off by default; switching it on asks `plugins.dangerous`. It runs only on its own screen (Transfers hub tile), while Paletools and Auto Snipe are enabled; leaving the screen or switching it off stops it. Each search and each buy counts as one attempt (`maxSnipes`), bought cards count against `maxCards`; it buys every active offer at or below the maximum price, cheapest first. Its embedded market filters run the market-search-filters hooks and also get the Snipe Player and Bulk Buy buttons, which its stylesheet hides (with the native Search button).
+- **Album and gallery Buy button** (`src/plugins/album/album-view-controller.js`): off by default (`album.buyEnabled`, `gallery.buyEnabled`, confirmed with `plugins.dangerous`); one purchase at a time, of the cheapest active offer of that exact card, after a confirmation dialog, and only if the price is still the one shown.
+
+## 6. Persisted data and external identifiers
 
 Do not rename: `localStorage` keys (for example `paletools:settings`, `paletools:searchFilters`), IndexedDB database and store names, configuration keys (`configuration.plugins.<name>`), translation keys, event names (`paletools:*`), CSS ids/classes used by styles and shortcuts, and methods added to Web App prototypes that other modules call by name.
 
-## 6. Known defects inherited from the original script
+## 7. Known defects inherited from the original script
 
 These defects come from the original Paletools and were deliberately left as they are, so the script behaves like the original. The complete list is in the "Known issues (kept as-is)" section of each module's header comment. Fixing one is a behavior change: do it on purpose and run `npm test`.
 
 - Identifiers declared nowhere — `saveConfiguration`, `updateConfiguration`, `addStyles`, `removeStyles`, `remove`, `i`, `info` and a `response` — throw `ReferenceError` when that code runs (list in `src/external-globals.json`, `undeclaredInOriginal`).
 - `hasClass("phone")` in the boot is called without an element.
 - The plugin list comparator returns `NaN` for entries without `order` (see section 1).
-- The market result transformers (`src/webapp/patches.js`) apply to the player snipe searches, which do not use `disableOverrides`. With "hide duplicates" (`marketSearchFilters.hideDuplicates`) on, offers whose `definitionId` is already in the club are removed before they reach the sniping, which then does not buy them. Bulk Buy is not affected (it uses `disableOverrides: true`).
+- The market result transformers (`src/webapp/patches.js`) apply to the player snipe searches, which do not use `disableOverrides`. With "hide duplicates" (`marketSearchFilters.hideDuplicates`) on, offers whose `definitionId` is already in the club are removed before they reach the sniping, which then does not buy them. Since 27.2.1 the same happens to offers outside the OVR range of the search criteria (`marketSearchFilters.playerRating`). Bulk Buy and Auto Snipe are not affected (they use `disableOverrides: true`).
+
+Defects of the Paletools 27.2.1 release, ported as they are by the update:
+
+- Club Analyzer: 27.2.1 removed `counters.rare` but still counts rare (rareflag 1) players in it, so the first rare non-loan club player throws a `TypeError` inside the analysis and it never finishes (the loading message stays).
+- Market search filters: the holographic/OVR result transformer runs even with Paletools disabled, and `handlePlayerIdChange` writes `defId = []` on the active controller even when it is not a market-filters controller.

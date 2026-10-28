@@ -6,8 +6,9 @@
  *
  * Invariants:
  * - Entries run in registration (plugin run) order and are never removed.
- * - Transformer `(items, controller) -> items | Promise`; validator
- *   `(items, services.Item) -> boolean | Promise`, a falsy result marks the response unsuccessful
+ * - Transformer `(items, controller, criteria) -> items | Promise`; validator
+ *   `(items, services.Item, criteria) -> boolean | Promise` (criteria: the searched
+ *   `UTSearchCriteriaDTO`), a falsy result marks the response unsuccessful
  *   and stops later validators; handler `(items, controller)` after `UTMarketSearchView.setItems`.
  *   Transformers and validators are skipped for searches with `disableOverrides`.
  */

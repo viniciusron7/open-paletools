@@ -1,34 +1,29 @@
 /**
  * `AlbumView` (extends `UTClubSearchResultsView`): album screen with league / club / sort
- * dropdowns, a status line and per-card Market and Mark-first-owner buttons. Instantiated by
- * `AlbumViewController` and extended by `GalleryView`.
+ * dropdowns, a status line and per-card Market, Buy and Mark-first-owner buttons. Instantiated
+ * by `AlbumViewController` and extended by `GalleryView`.
  *
  * Invariants:
- * - The constructor creates `onClubChanged`, `onSortChanged`, `onMarketClicked` and
- *   `onFirstOwnerClicked`, observed by `AlbumViewController.init` (GalleryView gets them through
- *   `AlbumView.call`).
+ * - The constructor creates `onClubChanged`, `onSortChanged`, `onMarketClicked`, `onBuyClicked`
+ *   and `onFirstOwnerClicked`, observed by `AlbumViewController.init` (GalleryView gets them
+ *   through `AlbumView.call`).
+ * - Market and Buy are only offered for cards that are not collected yet; Buy also needs
+ *   Paletools and the plugin enabled plus its `buyEnabled` setting (`configuration.plugins.gallery`
+ *   when the view has `selectedCards`, i.e. it is the gallery, `.album` otherwise).
  * - The selection `{leagueId, clubId, sortBy}` is persisted to
  *   `configuration.plugins.album.lastSelection` on every change and restored in `_generate`.
  * - `setItems` needs `setAlbumEntries` first (it destructures the entry of every row by
  *   definitionId); it calls `UTClubSearchResultsView.prototype.setItems` at call time, so plugin
  *   wrappers on that prototype also run for the album and gallery.
- * - `clearCardListeners` inlines the inverse of `listenForEvent` (namespaced name, click ->
- *   pointerdown on phones); keep it in sync with src/core/events.js or card listeners leak.
+ * - Card listeners are added with `listenForEvent` and removed with `stopListeningForEvent`, which
+ *   map the event name the same way (click -> pointerdown on phones).
  * - Sort keys `rating`, `name`, `gradingScore`, `tracked` must match the controller; CSS classes
  *   (`album-view`, `album-grid`, `album-header`, `album-player`, ...) are styled by album.css,
  *   shared with the gallery; the row class `album-<status>` is not targeted by any stylesheet.
  */
 import { configuration, persistConfiguration } from "../../config/configuration.js";
-import { isIterable } from "../../core/collections.js";
-import {
-  addClasses,
-  appendElements,
-  createElement,
-  getDomElement,
-  prependElements,
-} from "../../core/dom.js";
-import { listenForEvent, namespaceEventName } from "../../core/events.js";
-import { getPageWindow } from "../../core/page-window.js";
+import { addClasses, appendElements, createElement, prependElements } from "../../core/dom.js";
+import { listenForEvent, stopListeningForEvent } from "../../core/events.js";
 import { translate } from "../../i18n/translations.js";
 import { DataProviderDropdownControl, dataProviderType } from "../../ui/data-provider-dropdown.js";
 import { hideElements } from "../../ui/visibility.js";
@@ -40,6 +35,7 @@ const AlbumViewImpl = function () {
   this.onClubChanged = new EAObservable();
   this.onSortChanged = new EAObservable();
   this.onMarketClicked = new EAObservable();
+  this.onBuyClicked = new EAObservable();
   this.onFirstOwnerClicked = new EAObservable();
   this.cardListeners = [];
   this.albumEntries = new Map();
@@ -163,24 +159,7 @@ AlbumViewImpl.prototype._saveSelection = function () {
 
 AlbumViewImpl.prototype.clearCardListeners = function () {
   this.cardListeners.forEach(([cardElement, cardListener]) =>
-    (function (elementOrView, eventName, listener, listenerOptions) {
-      if (typeof elementOrView === "string") {
-        listenerOptions = listener;
-        listener = eventName;
-        eventName = elementOrView;
-        elementOrView = getPageWindow();
-      }
-      if ((eventName = namespaceEventName(eventName)) === "click" && isPhone()) {
-        eventName = "pointerdown";
-      }
-      if (isIterable(getDomElement(elementOrView))) {
-        for (let element of getDomElement(elementOrView)) {
-          element.removeEventListener(eventName, listener, listenerOptions);
-        }
-      } else {
-        getDomElement(elementOrView).removeEventListener(eventName, listener, listenerOptions);
-      }
-    })(cardElement, "click", cardListener),
+    stopListeningForEvent(cardElement, "click", cardListener),
   );
   this.cardListeners = [];
 };
@@ -234,11 +213,26 @@ AlbumViewImpl.prototype.setItems = function (listItems, ...otherArguments) {
       appendElements(actionsContainer, button);
       return button;
     };
-    addActionButton("market", () =>
-      this.onMarketClicked.notify({
-        definitionId: item.definitionId,
-      }),
-    );
+    if (!item.isCollected) {
+      addActionButton("market", () =>
+        this.onMarketClicked.notify({
+          definitionId: item.definitionId,
+        }),
+      );
+    }
+    const pluginSettings = configuration.plugins[this.selectedCards ? "gallery" : "album"];
+    if (
+      !item.isCollected &&
+      configuration.enabled &&
+      pluginSettings.enabled &&
+      pluginSettings.buyEnabled
+    ) {
+      addActionButton("buy", () =>
+        this.onBuyClicked.notify({
+          definitionId: item.definitionId,
+        }),
+      );
+    }
     if (item.isCollected && canMarkFirstOwner) {
       const firstOwnerButton = addActionButton("markFirstOwner", () =>
         this.onFirstOwnerClicked.notify({

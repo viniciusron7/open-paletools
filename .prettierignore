@@ -4,3 +4,5 @@ package-lock.json
 src/**/*.css
 # Generated data (npm run update:boot-snapshot).
 tests/userscript/boot-fingerprint.snapshot.json
+# The upstream release src/ follows, byte for byte as published (minified).
+upstream/base.user.js

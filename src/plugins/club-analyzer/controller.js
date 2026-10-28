@@ -12,10 +12,14 @@
  *   the shared club-players cache; trade pile, watchlist and storage failures fall back to empty
  *   data. Progress keys: `plugins.clubAnalyzer.view.loading.<step>` with `{count}`.
  * - Group key is the definitionId plus `e` for upgraded items; items with `loans > 0` are not
- *   counted. Counters: rareflag 0/1 by level (<= 64 bronze, <= 74 silver, else gold) with leagues
- *   1003/1014 as libertadores/sudamericana, 54/59 MOTM, 3 TOTW, 11 TOTS, others special.
+ *   counted. Counters: rareflag 0/1 by level (<= 64 bronze, <= 74 silver, else gold), 3 TOTW,
+ *   11 TOTS, others special; `sbsScore` sums the club players' `sbsScore` (Grading Score), which
+ *   also groups `players.bySbsScore` and is an export column.
  *
  * Known issues (kept as-is):
+ * - 27.2.1 removed `counters.rare` but still counts rareflag 1 players in
+ *   `counters["rare"]`, so the first rare non-loan club player throws a TypeError and the
+ *   analysis never finishes (see the next item).
  * - `_reload` runs inside an `async` Promise executor: errors from `loadClubPlayers`,
  *   `usermassinfo` or processing are lost and the loading message stays.
  * - `addPlayersToGroups` reads `player.teamid` (lowercase), so the group `team` is translated
@@ -79,6 +83,7 @@ function exportClubAnalyzerReport(
       "Lastname",
       "Name",
       "Rating",
+      "Grading Score",
       "Evo",
       "Position",
       "Rarity",
@@ -109,6 +114,7 @@ function exportClubAnalyzerReport(
         player.data.l,
         player.data.f,
         player.rating,
+        player.sbsScore,
         player.upgrades ? "Yes" : "No",
         player.preferredPosition,
         getClubAnalyzerRarityName(player.rareflag),
@@ -152,6 +158,7 @@ function exportClubAnalyzerReport(
             playerGroup.data.l,
             playerGroup.data.f,
             player.rating,
+            player.sbsScore,
             player.upgrades ? "Yes" : "No",
             player.preferredPosition,
             getClubAnalyzerRarityName(player.rareflag),
@@ -332,6 +339,7 @@ ClubAnalyzerViewController.prototype._reload = function () {
                 },
                 count: 1,
                 sumPrices: player.lastSalePrice,
+                sbsScore: player.sbsScore,
                 rating: player.rating,
                 rarity: getClubAnalyzerRarityName(player.rareflag),
                 nation: getClubAnalyzerNationName(player.nationId),
@@ -349,14 +357,7 @@ ClubAnalyzerViewController.prototype._reload = function () {
               case 0:
               case 1:
                 let counterGroup = "";
-                counterGroup =
-                  player.leagueId === 1003
-                    ? "libertadores"
-                    : player.leagueId === 1014
-                      ? "sudamericana"
-                      : player.rareflag === 0
-                        ? "common"
-                        : "rare";
+                counterGroup = player.rareflag === 0 ? "common" : "rare";
                 if (player.rating <= 64) {
                   viewmodel.counters[counterGroup].bronze++;
                 } else if (player.rating > 64 && player.rating <= 74) {
@@ -364,12 +365,6 @@ ClubAnalyzerViewController.prototype._reload = function () {
                 } else {
                   viewmodel.counters[counterGroup].gold++;
                 }
-                break;
-              case 54:
-                viewmodel.counters.libertadores.motm++;
-                break;
-              case 59:
-                viewmodel.counters.sudamericana.motm++;
                 break;
               case 3:
                 viewmodel.counters.totw++;
@@ -465,6 +460,7 @@ ClubAnalyzerViewController.prototype._reload = function () {
           const player = clubPlayers[clubPlayerKey];
           const playerKey = player.upgrades ? player.definitionId + "e" : player.definitionId;
           viewmodel.players.all[playerKey] = player;
+          viewmodel.counters.sbsScore += player.sbsScore;
           player.data = {
             f: player._staticData.firstName,
             l: player._staticData.lastName,
@@ -481,6 +477,16 @@ ClubAnalyzerViewController.prototype._reload = function () {
             viewmodel.players.byRating[player.rating].by[rarityName] || [];
           viewmodel.players.byRating[player.rating].players.push(player);
           viewmodel.players.byRating[player.rating].by[rarityName].push(player);
+          viewmodel.players.bySbsScore[player.sbsScore] = viewmodel.players.bySbsScore[
+            player.sbsScore
+          ] || {
+            players: [],
+            by: {},
+          };
+          viewmodel.players.bySbsScore[player.sbsScore].by[rarityName] =
+            viewmodel.players.bySbsScore[player.sbsScore].by[rarityName] || [];
+          viewmodel.players.bySbsScore[player.sbsScore].players.push(player);
+          viewmodel.players.bySbsScore[player.sbsScore].by[rarityName].push(player);
           const nationName = getClubAnalyzerNationName(player.nationId);
           viewmodel.players.byNation[nationName] = viewmodel.players.byNation[nationName] || {
             players: [],

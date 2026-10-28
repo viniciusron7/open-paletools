@@ -18,44 +18,44 @@ import { formatNumber } from "../../i18n/translations.js";
 import { hideElements, showElements } from "../visibility.js";
 
 export class ItemValueDisplay {
-  #v;
+  #S;
   #w;
-  #T;
   #C;
+  #T;
   #A;
   constructor(initialValue, extraClassName = "") {
-    this.#v = createElement("div", {
+    this.#S = createElement("div", {
       className: "item-value-container " + extraClassName,
     });
-    setStyles(this.#v, {
+    setStyles(this.#S, {
       display: "block !important",
     });
-    this.#C = createElement("div", {
+    this.#T = createElement("div", {
       className: "caption",
     });
     const itemValueElement = createElement("div", {
       className: "item-value",
     });
-    this.#T = createElement("div", {
+    this.#C = createElement("div", {
       className: "value",
     });
-    this.#T.textContent = initialValue;
-    appendElements(itemValueElement, this.#T);
-    appendElements(this.#v, this.#C, itemValueElement);
-    hideElements(this.#C);
+    this.#C.textContent = initialValue;
+    appendElements(itemValueElement, this.#C);
+    appendElements(this.#S, this.#T, itemValueElement);
+    hideElements(this.#T);
   }
   ["setCaption"](caption) {
-    showElements(this.#C);
-    this.#C.textContent = caption;
+    showElements(this.#T);
+    this.#T.textContent = caption;
   }
   ["setValue"](newValue) {
     this.#A = newValue;
-    this.#T.textContent = formatNumber(newValue);
+    this.#C.textContent = formatNumber(newValue);
   }
   ["getValue"]() {
     return this.#A;
   }
   ["getRootElement"]() {
-    return this.#v;
+    return this.#S;
   }
 }

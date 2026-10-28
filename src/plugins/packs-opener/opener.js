@@ -31,6 +31,7 @@ import {
   fetchUnassignedItems,
   moveItemsToClub,
   moveItemsToSbcStorage,
+  moveItemsToTransferList,
 } from "../../webapp/item-piles.js";
 import { observableToPromise } from "../../webapp/observable.js";
 
@@ -287,9 +288,7 @@ async function packsOpenerApplyItemAction(
           return packsOpenerProcessStatus.SUCCESS;
         }
       }
-      response = await (function (itemsToMove) {
-        return observableToPromise(services.Item.move(itemsToMove, ItemPile.TRANSFER));
-      })(packItems);
+      response = await moveItemsToTransferList(packItems);
       if (response.success) {
         statsUpdaters.moveToTransferList(packItems.length);
         state.addItems("transferList", packItems);

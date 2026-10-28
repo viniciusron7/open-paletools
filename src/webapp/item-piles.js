@@ -10,8 +10,8 @@
  * - After moving, only `moveUnassignedItemsToClub` (PURCHASED, INBOX, CLUB, plus STORAGE with
  *   `storeDuplicates`; with it, no marks of its own when nothing is unassigned) and
  *   `moveMatchingStorageItemsToClub` (all four, only when a storage item matches) mark piles
- *   dirty in `repositories.Item`; `moveItemsToClub`, `moveItemsToSbcStorage` and `discardItems`
- *   mark nothing. `fetchUnassignedItems` marks PURCHASED dirty first and sends the
+ *   dirty in `repositories.Item`; `moveItemsToClub`, `moveItemsToTransferList`,
+ *   `moveItemsToSbcStorage` and `discardItems` mark nothing. `fetchUnassignedItems` marks PURCHASED dirty first and sends the
  *   "Unassigned Items - List View" PIN page view.
  * - `moveItemsToSbcStorage` sends at most `sbcStorageCapacity` (100) minus the current storage
  *   count; when it truncates it sets `success = false` and `storedItemsCount` on the move
@@ -134,6 +134,10 @@ export async function moveUnassignedItemsToClub(definitionIds = [], storeDuplica
 
 export function moveItemsToClub(itemsToMove) {
   return observableToPromise(services.Item.move(itemsToMove, ItemPile.CLUB));
+}
+
+export function moveItemsToTransferList(itemsToMove) {
+  return observableToPromise(services.Item.move(itemsToMove, ItemPile.TRANSFER));
 }
 
 export function discardItems(itemsToDiscard) {

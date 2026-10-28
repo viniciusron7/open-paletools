@@ -55,3 +55,4 @@ A feature is a plugin: an object with a `run()` function, called once when the W
 - The build only accepts code that follows the [module rules](MODULE-RULES.md), and tells you what to fix.
 - A new default for an existing setting may not show up in your browser: see [Default settings](SETTINGS.md).
 - When something does not work, see [Debugging](DEBUGGING.md).
+- Plugins in their own modules, listed in `src/custom-plugins.js`, survive every update to a new Paletools release untouched. If a release removes a built-in function or value your plugin uses, the update keeps it and reports a conflict (see [Updating](UPDATING.md#your-own-code)).

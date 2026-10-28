@@ -2,7 +2,7 @@
 
 The Paletools userscript for the EA SPORTS FC Ultimate Team Web App, as readable, modular source code. Change what you want in `src/`, build it with one command and install the result in Tampermonkey.
 
-Unofficial: based on Paletools 27.1.5 by Paleta. Not affiliated with Paleta or EA.
+Unofficial: based on Paletools 27.2.1 by Paleta. Not affiliated with Paleta or EA.
 
 ## Install
 
@@ -16,11 +16,19 @@ npm run build   # writes dist/paletools.user.js
 ```
 
 Then, in [Tampermonkey](https://chromewebstore.google.com/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo):
+
 1. Open the dashboard and click **+** (create a new script).
 2. Replace the whole template with the content of `dist/paletools.user.js` and save.
 3. Disable the official Paletools if you have it installed: with both enabled, they can conflict, or only the official one runs.
 
 After every change in `src/`, run `npm run build` again and replace the script content in Tampermonkey. To get a new version of this project, run `git pull` and do the same ([more about updating](docs/UPDATING.md)).
+
+## Updating to a new Paletools release
+
+When Paleta publishes a new Paletools release, port it into `src/` with one command. Your own plugins and changes are kept, and the result is verified statement by statement against the new release:
+
+- in [Claude Code](https://claude.com/claude-code): `/update-paletools` (ports, resolves conflicts, names and organizes the new code, runs every check);
+- from the command line: `npm run upstream:check`, then `npm run upstream:update` ([how it works](docs/UPDATING.md)).
 
 ## Where the code is
 
@@ -38,11 +46,13 @@ After every change in `src/`, run `npm run build` again and replace the script c
 | Sessions, dialogs and mutual exclusion of both | [`src/plugins/market-automation/sessions.js`](src/plugins/market-automation/sessions.js)                                         |
 | Buttons and hooks of both automations          | `index.js` of [`player-snipe`](src/plugins/player-snipe/index.js) and [`bulk-buy`](src/plugins/bulk-buy/index.js)                |
 | Legacy snipe (shortcuts, queue, confirmation)  | [`src/plugins/snipe/`](src/plugins/snipe/)                                                                                       |
+| Auto Snipe (Paletools 27.2.1, Transfers tile)  | [`src/plugins/auto-snipe/`](src/plugins/auto-snipe/)                                                                             |
+| Album and gallery Buy button, bought dialog    | [`src/plugins/album/album-view-controller.js`](src/plugins/album/album-view-controller.js)                                       |
+| Upstream update tools (port a new release)     | [`scripts/upstream/`](scripts/upstream/), the release `src/` follows in [`upstream/`](upstream/)                                 |
 | Built-in plugin list and boot sequence         | [`src/bootstrap/boot.js`](src/bootstrap/boot.js)                                                                                 |
 | Global Web App patches                         | [`src/webapp/patches.js`](src/webapp/patches.js)                                                                                 |
 | Prototype hook engine                          | [`src/core/prototype-override.js`](src/core/prototype-override.js)                                                               |
 | Any other feature                              | [`src/plugins/`](src/plugins/), one folder per feature (e.g. `sbc-auto-solver`, `my-packs`)                                      |
-
 
 ```
 src/
@@ -60,16 +70,16 @@ src/
   assets/ styles/        images and the global stylesheet, embedded by the build
   runtime/               webpack runtime of the original bundle (do not edit)
   external-globals.json  Web App, browser and userscript APIs the modules may use
-scripts/                 build and checks
+scripts/                 build and checks; scripts/upstream/ ports new Paletools releases
+upstream/                the official release src/ follows (base.user.js, base.json)
 tests/                   tests and a simulated Web App
 docs/                    documentation (see below)
 ```
 
-
 ## More documentation
 
 - [Adding a feature](docs/ADDING-A-FEATURE.md): write your own plugin, step by step.
-- [Updating and the official Paletools](docs/UPDATING.md): getting new versions, and running next to the official script.
+- [Updating and the official Paletools](docs/UPDATING.md): porting a new Paletools release, getting new versions of this project, and running next to the official script.
 - [Default settings](docs/SETTINGS.md): why a changed default may not show up, and how to reset the settings.
 - [Debugging](docs/DEBUGGING.md): finding errors and their source module.
 - [Commands](docs/COMMANDS.md): every npm command of the project.

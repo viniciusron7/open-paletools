@@ -16,3 +16,17 @@
 .item-values-container .squad-value .squad-price {
     order: 0
 }
+
+.ut-one-click-sbc-work-area-item-view {
+    height: 100%;
+}
+
+.ut-one-click-sbc-work-area-item-view--footer {
+    flex-wrap: wrap;
+}
+
+.ut-one-click-sbc-work-area-item-view--footer .item-values-container {
+    flex-basis: 100%;
+    justify-content: center;
+    font-size: 12px;
+}

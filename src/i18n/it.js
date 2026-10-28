@@ -11,6 +11,15 @@
  * `plugins.warningScreen.disclaimer`.
  */
 export const italianTranslations = {
+  "plugins.album.boughtTitle": "Carta acquistata",
+  "plugins.album.sendToClub": "Invia al club",
+  "plugins.album.sendToTransferList": "Invia alla lista trasferimenti",
+  "plugins.album.buyTransferSuccess": "Carta inviata alla lista trasferimenti.",
+  "plugins.album.buyMoveError":
+    "La carta è stata acquistata, ma non è stato possibile spostarla. Controlla gli oggetti non assegnati o gli obiettivi di mercato.",
+  "plugins.album.market": "Mercato",
+  "plugins.album.settings.buyEnabled": "Abilita pulsante di acquisto",
+  "plugins.gallery.settings.buyEnabled": "Abilita pulsante di acquisto",
   "plugins.checkForUpdates.settings.title": "Controlla aggiornamenti",
   enabled: "Abilitato",
   valid: "valido",
@@ -84,6 +93,12 @@ export const italianTranslations = {
   "plugins.playerActions.playStylesLab": "PlayStyles Lab",
   "plugins.playerActions.removeAllEvolutions": "Rimuovi tutte le evoluzioni",
   "plugins.marketSearchFilters.settings.title": "Filtri di ricerca di mercato",
+  "plugins.marketSearchFilters.settings.revisionFilters": "Abilita filtro versione",
+  "controls.playerRevisions.revision": "Versione",
+  "controls.playerRevisions.holographic": "Olografico",
+  "controls.playerRevisions.allRevisions": "Tutte le versioni",
+  "controls.playerRevisions.revisionError":
+    "Impossibile caricare le versioni. Seleziona di nuovo il giocatore per riprovare.",
   "plugins.marketSearchFilters.settings.savedFilters": "Abilita i filtri salvati",
   "plugins.marketSearchFilters.settings.playerId": "Abilita ID giocatore",
   "plugins.marketSearchFilters.settings.playerRating": "Abilita la valutazione del giocatore",

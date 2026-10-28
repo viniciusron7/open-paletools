@@ -22,9 +22,9 @@ export class AddMultiplePlayersViewModel {
   #ce;
   #ue;
   #pe;
-  #J;
+  #X;
   constructor(squad, sbcChallenge, sbcSet) {
-    this.#J = sbcSet;
+    this.#X = sbcSet;
     this.#ae = squad;
     this.#re = sbcChallenge;
     this.#oe = new EAObservable();
@@ -43,7 +43,7 @@ export class AddMultiplePlayersViewModel {
     return this.#re;
   }
   get ["set"]() {
-    return this.#J;
+    return this.#X;
   }
   get ["searchType"]() {
     return this.#ue;

@@ -6,8 +6,9 @@
  * Hooks (installed in `run()` with `hookPrototypeMethod`, which wraps the implementation present
  * at that moment, i.e. after src/webapp/patches.js and the lower-order SBC plugins):
  * - `UTOneClickSBCWorkAreaViewController` / `UTOneClickSBCRequirementsViewController` (only if
- *   defined): after `viewDidAppear` adds a mini button to
- *   `.ut-one-click-sbc-work-area-view--toolbar-actions` / `footer`; before `dealloc` sets
+ *   defined): after `viewDidAppear` adds a button (class `sbc-one-click-auto-solve-button`,
+ *   no longer `mini` since 27.2.1) to `.ut-one-click-sbc-work-area-view--toolbar-actions` /
+ *   `footer`; before `dealloc` sets
  *   `_sbcAutoSolverDisposed` and destroys it.
  * - `UTOneClickSBCWorkAreaViewModel._buildCriteria`, after: sets `hideLocked = true` on the
  *   returned criteria (an after-hook's last argument is the result), even when disabled.
@@ -173,7 +174,7 @@ sbcAutoSolverPluginDefinition = {
               const sbcAutoSolveButton = new UTStandardButtonControl();
               sbcAutoSolveButton.init();
               sbcAutoSolveButton.setText(translate("plugins.sbcAutoSolver.button"));
-              addClasses(sbcAutoSolveButton, "mini", "sbc-one-click-auto-solve-button");
+              addClasses(sbcAutoSolveButton, "sbc-one-click-auto-solve-button");
               sbcAutoSolveButton.addTarget(
                 this,
                 () => {

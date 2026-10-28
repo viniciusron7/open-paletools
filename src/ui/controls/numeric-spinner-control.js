@@ -1,7 +1,9 @@
 /**
  * `NumericSpinnerControl`: numeric spinner (`div.ut-numeric-input-spinner-control` with an EA
  * decrement button, `UTNumberInputControl` and increment button) with press-and-hold repeat;
- * used by the packs opener and the SBC auto-solver dialog.
+ * used by the Auto Snipe view, the packs opener and the SBC auto-solver dialog. Since 27.2.1 the
+ * release evaluates it right after the Auto Snipe runner, before the Auto Snipe view, and the
+ * manifest keeps that position.
  *
  * Invariants:
  * - Unlike the other controls it really subclasses `UTControl`: the prototype is

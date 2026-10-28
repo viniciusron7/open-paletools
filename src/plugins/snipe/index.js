@@ -14,8 +14,8 @@
  * Invariants:
  * - Queue: `queueSnipeRequest` (one-touch, superMode shortcuts) pushes `[noop, true]`; the
  *   validator runs for responses without `disableOverrides`, takes one request, clears the queue,
- *   bids the cheapest ACTIVE offer (`sharedItemActionController.bid`, own 30 s timeout, status
- *   408), fires `SNIPE_SUCCESS` (ding if `sounds.enabled`) or `SNIPE_FAILED`, then returns to the
+ *   bids the cheapest ACTIVE offer (`buyFirstActiveItem` from src/market/item-actions.js: own 30 s
+ *   timeout, status 408), fires `SNIPE_SUCCESS` (ding if `sounds.enabled`) or `SNIPE_FAILED`, then returns to the
  *   filters (`SNIPE_GOBACK`); returning false makes patches.js mark the response unsuccessful.
  * - With `buttons.results.pressEnter`, `CONFIRM_BUY_NOW` calls `onConfirm` without a popup.
  *   Classes added once per panel (send-to-club, send-to-transfer-list, quick-sell, compare-price,
@@ -59,7 +59,7 @@ import { dispatchPaletoolsEvent, listenForEvent, paletoolsEvents } from "../../c
 import { debugLog } from "../../core/logger.js";
 import { getValueAtPath, setValueAtPath } from "../../core/objects.js";
 import { formatNumber, translate } from "../../i18n/translations.js";
-import { sharedItemActionController } from "../../market/item-actions.js";
+import { buyFirstActiveItem } from "../../market/item-actions.js";
 import { getPriceRowValue, incrementPriceRowWithinMax } from "../../market/price-inputs.js";
 import { marketSearchResultValidators } from "../../market/search-hooks.js";
 import { selectMarketSearchResultAt } from "../../market/search-results.js";
@@ -146,52 +146,7 @@ snipePluginDefinition = {
           });
           goBackIfRequested();
         } else {
-          (function (sortedItems) {
-            if (!sortedItems || sortedItems.length === 0) {
-              return false;
-            }
-            const activeItem = sortedItems.find(
-              (item) => item.getAuctionData()._tradeState === AuctionTradeStateEnum.ACTIVE,
-            );
-            return (
-              !!activeItem &&
-              new Promise((resolve, reject) => {
-                const observer = {};
-                let bidObservable;
-                const timeoutId = setTimeout(() => {
-                  bidObservable?.unobserve(observer);
-                  resolve({
-                    success: false,
-                    item: activeItem,
-                    status: 408,
-                  });
-                }, 30000);
-                try {
-                  bidObservable = sharedItemActionController.bid(
-                    activeItem,
-                    activeItem.getAuctionData().buyNowPrice,
-                  );
-                  bidObservable.observe(observer, (observable, response) => {
-                    clearTimeout(timeoutId);
-                    observable.unobserve(observer);
-                    resolve({
-                      success:
-                        Boolean(response?.success) &&
-                        !response.error &&
-                        !(Number(response.status) >= 400),
-                      item: activeItem,
-                      status: response?.status,
-                      error: response?.error,
-                    });
-                  });
-                } catch (error) {
-                  clearTimeout(timeoutId);
-                  bidObservable?.unobserve(observer);
-                  reject(error);
-                }
-              })
-            );
-          })(
+          buyFirstActiveItem(
             items
               .slice()
               .sort(

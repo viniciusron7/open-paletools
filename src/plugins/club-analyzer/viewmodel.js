@@ -1,7 +1,7 @@
 /**
  * `ClubAnalyzerViewModel`, built by `ClubAnalyzerViewController._reload` and rendered by
- * `ClubAnalyzerView`: player groupings (all, club, by nation/league/rating/rarity, unassigned,
- * trade pile, watchlist states, SBC storage), prices and dashboard counters. Also defines the
+ * `ClubAnalyzerView`: player groupings (all, club, by nation/league/rating/SBS score/rarity,
+ * unassigned, trade pile, watchlist states, SBC storage), prices and dashboard counters. Also defines the
  * module-private `ClubAnalyzerRankedList` (bounded list kept sorted descending by a selector).
  *
  * Invariants:
@@ -11,7 +11,8 @@
  * Known issues (kept as-is):
  * - `violentCalculation` (a plain function) is never called; `rank` (the only holder of
  *   `ClubAnalyzerRankedList` instances) is never read or filled; `prices` is never filled either.
- * - `counters.tots` is not initialized although the controller increments it.
+ * - `counters.tots` is not initialized although the controller increments it, and since 27.2.1
+ *   neither is `counters.rare` (the controller's count of rare players then throws).
  */
 const ClubAnalyzerRankedList = class {
   constructor(maxSize, valueSelector) {
@@ -83,6 +84,7 @@ export class ClubAnalyzerViewModel {
       byNation: {},
       byLeague: {},
       byRating: {},
+      bySbsScore: {},
       byRarity: {},
       unnasigned: {
         all: {},
@@ -99,26 +101,7 @@ export class ClubAnalyzerViewModel {
     this.prices = {};
     this.counters = {
       special: 0,
-      rare: {
-        gold: 0,
-        silver: 0,
-        bronze: 0,
-        ucl: 0,
-      },
       common: {
-        gold: 0,
-        silver: 0,
-        bronze: 0,
-        ucl: 0,
-      },
-      libertadores: {
-        motm: 0,
-        gold: 0,
-        silver: 0,
-        bronze: 0,
-      },
-      sudamericana: {
-        motm: 0,
         gold: 0,
         silver: 0,
         bronze: 0,
@@ -128,6 +111,7 @@ export class ClubAnalyzerViewModel {
       watchlistTotal: 0,
       tradepileTotal: 0,
       sbcStorageTotal: 0,
+      sbsScore: 0,
     };
   }
 }

@@ -11,6 +11,15 @@
  * `plugins.warningScreen.disclaimer`.
  */
 export const spanishTranslations = {
+  "plugins.album.boughtTitle": "Carta comprada",
+  "plugins.album.sendToClub": "Enviar al club",
+  "plugins.album.sendToTransferList": "Enviar a la lista de transferencias",
+  "plugins.album.buyTransferSuccess": "Carta enviada a tu lista de transferencias.",
+  "plugins.album.buyMoveError":
+    "La carta se compró, pero no se pudo mover. Revisa tus artículos sin asignar o tus objetivos de transferencia.",
+  "plugins.album.market": "Mercado",
+  "plugins.album.settings.buyEnabled": "Habilitar botón de compra",
+  "plugins.gallery.settings.buyEnabled": "Habilitar botón de compra",
   "plugins.checkForUpdates.settings.title": "Buscar actualizaciones",
   enabled: "Habilitado",
   valid: "válido",
@@ -85,6 +94,12 @@ export const spanishTranslations = {
   "plugins.playerActions.playStylesLab": "PlayStyles Lab",
   "plugins.playerActions.removeAllEvolutions": "Quitar todas las evoluciones",
   "plugins.marketSearchFilters.settings.title": "Filtros de Búsqueda del Mercado",
+  "plugins.marketSearchFilters.settings.revisionFilters": "Activar filtro de revisión",
+  "controls.playerRevisions.revision": "Revisión",
+  "controls.playerRevisions.holographic": "Holográfico",
+  "controls.playerRevisions.allRevisions": "Todas las revisiones",
+  "controls.playerRevisions.revisionError":
+    "No se pudieron cargar las revisiones. Selecciona al jugador de nuevo para reintentar.",
   "plugins.marketSearchFilters.settings.savedFilters": "Habilitar filtros guardados",
   "plugins.marketSearchFilters.settings.playerId": "Habilitar Id del jugador",
   "plugins.marketSearchFilters.settings.playerRating": "Habilitar valoración del jugador",

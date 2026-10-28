@@ -15,6 +15,12 @@ node_modules/
 Thumbs.db
 .idea/
 .vscode/
-.claude/
+# Claude Code: only the project skills are shared (the /update-paletools command)
+.claude/*
+!.claude/skills/
 *.swp
 *.log
+
+# Upstream sync work files (npm run upstream:update) and local release downloads
+/.upstream/
+/versoes_paletools/

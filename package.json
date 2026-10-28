@@ -1,6 +1,6 @@
 {
   "name": "paletools-userscript",
-  "version": "27.1.5",
+  "version": "27.2.1",
   "private": true,
   "description": "Readable, modular source of the Paletools userscript for the EA SPORTS FC Ultimate Team Web App. Edit src/, run npm run build and install dist/paletools.user.js.",
   "license": "UNLICENSED",
@@ -15,10 +15,15 @@
     "format:check": "prettier --check .",
     "test": "node scripts/run-tests.mjs",
     "verify": "npm run check:modules && npm run format:check && npm test",
-    "update:boot-snapshot": "node scripts/update-boot-snapshot.mjs"
+    "update:boot-snapshot": "node scripts/update-boot-snapshot.mjs",
+    "upstream:check": "node scripts/upstream/update.mjs check",
+    "upstream:update": "node scripts/upstream/update.mjs update",
+    "upstream:verify": "node scripts/upstream/update.mjs verify",
+    "upstream:status": "node scripts/upstream/update.mjs status"
   },
   "devDependencies": {
     "acorn": "8.18.0",
+    "astring": "1.9.0",
     "eslint-scope": "9.1.2",
     "prettier": "3.8.1"
   }

@@ -7,13 +7,13 @@
  * - Names are namespaced by value in `namespaceEventName`: a `paletoolsEvents` value becomes
  *   'paletools:<value>', a `mobileEvents` value 'paletools-mobile:<value>', anything else is
  *   used as-is. Constants and raw strings ('appEnabled') are interchangeable and the values are
- *   the DOM event names, so changing one breaks the matching listeners or dispatchers;
- *   src/plugins/album/album-view.js repeats this mapping to remove its listeners.
+ *   the DOM event names, so changing one breaks the matching listeners or dispatchers.
  * - The `mobileEvents` events are never dispatched in this code; they come from outside the
  *   script (src/bootstrap/boot.js listens for BACK_BUTTON_PRESSED).
  * - `listenForEvent(name, listener, options)` listens on the page window; with an explicit
  *   target first it accepts an element, an EA view/control or an iterable of elements. 'click'
- *   becomes 'pointerdown' when `isPhone()`.
+ *   becomes 'pointerdown' when `isPhone()`. `stopListeningForEvent` takes the same arguments and
+ *   removes the listener with the same name mapping; both must stay in sync.
  * - `importModule.r(moduleExports)` is webpack's ES-module marker for module 723 (`__esModule`,
  *   `Symbol.toStringTag`), kept at the place the original bundle had it. Nothing reads module
  *   723's exports, so it has no visible effect, but it is part of the original evaluation.
@@ -43,6 +43,25 @@ export function listenForEvent(target, eventName, listener, listenerOptions) {
   }
 }
 
+export function stopListeningForEvent(target, eventName, listener, listenerOptions) {
+  if (typeof target === "string") {
+    listenerOptions = listener;
+    listener = eventName;
+    eventName = target;
+    target = getPageWindow();
+  }
+  if ((eventName = namespaceEventName(eventName)) === "click" && isPhone()) {
+    eventName = "pointerdown";
+  }
+  if (isIterable(getDomElement(target))) {
+    for (let element of getDomElement(target)) {
+      element.removeEventListener(eventName, listener, listenerOptions);
+    }
+  } else {
+    getDomElement(target).removeEventListener(eventName, listener, listenerOptions);
+  }
+}
+
 export function dispatchPaletoolsEvent(eventName, detail) {
   eventName = namespaceEventName(eventName);
   getPageWindow().dispatchEvent(
@@ -55,7 +74,7 @@ export function dispatchPaletoolsEvent(eventName, detail) {
 
 importModule.r(moduleExports);
 
-export function namespaceEventName(eventName) {
+function namespaceEventName(eventName) {
   return Object.values(paletoolsEvents).indexOf(eventName) > -1
     ? "paletools:" + eventName
     : Object.values(mobileEvents).indexOf(eventName) > -1

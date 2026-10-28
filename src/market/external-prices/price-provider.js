@@ -15,7 +15,7 @@ export class ExternalItemPrice {
   #b;
   #y;
   #f;
-  #S;
+  #v;
   constructor(
     definitionId,
     price,
@@ -29,7 +29,7 @@ export class ExternalItemPrice {
     this.#b = platform;
     this.#y = isExtinct;
     this.#f = isObjective;
-    this.#S = isSbc;
+    this.#v = isSbc;
   }
   get ["definitionId"]() {
     return this.#h;
@@ -47,7 +47,7 @@ export class ExternalItemPrice {
     return this.#f;
   }
   get ["isSbc"]() {
-    return this.#S;
+    return this.#v;
   }
 }
 

@@ -83,6 +83,7 @@ import { paletoolsDatabase } from "../db/database.js";
 import { addMultiplePlayersToSquadPlugin } from "../plugins/add-multiple-players-to-squad/index.js";
 import { albumPlugin } from "../plugins/album/index.js";
 import { autoRelistPlugin } from "../plugins/auto-relist/index.js";
+import { autoSnipePlugin } from "../plugins/auto-snipe/index.js";
 import { babysitterPlugin } from "../plugins/babysitter/index.js";
 import { benchManagementPlugin } from "../plugins/bench-management/index.js";
 import { birthdayPlugin } from "../plugins/birthday/index.js";
@@ -332,6 +333,7 @@ async function initializePluginsWhenReady() {
         snipePlugin,
         playerSnipePlugin,
         bulkBuyPlugin,
+        autoSnipePlugin,
         albumPlugin,
         priceTrackerPlugin,
         galleryPlugin,

@@ -1,82 +1,24 @@
-.ut-content {
-    border-radius: 0 !important;
-}
-
+.ut-content,
 .ut-split-view .ui-layout-left,
-.ut-split-view .ui-layout-right {
+.ut-split-view .ui-layout-right,
+.listFUTItem .rowContent,
+.ut-search-filter-control,
+.ut-player-search-control--input-container,
+.ut-double-range-control .text-input-container .inputs input,
+.ut-drop-down-control,
+.ut-player-search-control .ut-text-input-control,
+.tile,
+.ut-numeric-input-spinner-control .ut-number-input-control,
+.btn-standard,
+button .currency,
+.tile,
+.ut-store-pack-details-view,
+.ut-sbc-set-tile-view,
+input[type="number"],
+.ut-store-pack-details-view--footer button.currency,
+.listFUTItem,
+.ut-sbc-challenges-view--challenges.grid-mode .ut-sbc-challenge-table-row-view,
+.landscape .sbc-template-builder-container .remove-button,
+.ut-pagination-control-view {
     border-radius: 0 !important;
 }
-
-.listFUTItem .rowContent {
-    border-radius: 0 !important;
-}
-
-.ut-search-filter-control {
-    border-radius: 0 !important;
-}
-
-.ut-player-search-control--input-container {
-    border-radius: 0 !important;
-}
-
-.ut-double-range-control .text-input-container .inputs input {
-    border-radius: 0 !important;
-}
-
-.ut-drop-down-control {
-    border-radius: 0 !important;
-}
-
-.ut-player-search-control .ut-text-input-control {
-    border-radius: 0 !important;
-}
-
-.tile {
-    border-radius: 0 !important;
-}
-
-.ut-numeric-input-spinner-control .ut-number-input-control {
-    border-radius: 0 !important;
-}
-
-.btn-standard {
-    border-radius: 0 !important;
-}
-
-button .currency {
-    border-radius: 0 !important;
-}
-
-.tile {
-    border-radius: 0 !important;
-}
-
-.ut-store-pack-details-view {
-    border-radius: 0 !important;
-}
-
-.ut-sbc-set-tile-view {
-    border-radius: 0 !important;
-}
-
-input[type="number"] {
-    border-radius: 0 !important;
-}
-
-.ut-store-pack-details-view--footer button.currency {
-    border-radius: 0 !important;
-}
-
-.listFUTItem {
-    border-radius: 0 !important;
-}
-
-.ut-sbc-challenges-view--challenges.grid-mode .ut-sbc-challenge-table-row-view {
-    border-radius: 0 !important;
-}
-
-.landscape .sbc-template-builder-container .remove-button {
-    border-radius: 0 !important;
-}
-
-

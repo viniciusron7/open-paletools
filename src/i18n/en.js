@@ -11,6 +11,15 @@
  * `plugins.warningScreen.disclaimer`.
  */
 export const englishTranslations = {
+  "plugins.album.boughtTitle": "Card bought",
+  "plugins.album.sendToClub": "Send to club",
+  "plugins.album.sendToTransferList": "Send to transfer list",
+  "plugins.album.buyTransferSuccess": "Card sent to your transfer list.",
+  "plugins.album.buyMoveError":
+    "The card was bought, but could not be moved. Check your unassigned items or transfer targets.",
+  "plugins.album.market": "Market",
+  "plugins.album.settings.buyEnabled": "Enable Buy button",
+  "plugins.gallery.settings.buyEnabled": "Enable Buy button",
   "plugins.priceTracker.settings.title": "Price Tracker",
   "plugins.priceTracker.revision": "Revision",
   "plugins.priceTracker.storageError": "Could not access saved players. Reopen the view to retry.",
@@ -89,7 +98,12 @@ export const englishTranslations = {
   "plugins.album.untrack": "Untrack",
   "plugins.album.markFirstOwner": "Mark as first owner",
   "plugins.album.firstOwnerError": "Could not save first ownership. Please try again.",
-  "plugins.album.market": "Market",
+  "plugins.album.buy": "Buy",
+  "plugins.album.lowestPrice": "Lowest market price (coins)",
+  "plugins.album.buyUnavailable": "No Buy Now listings are available for this card.",
+  "plugins.album.buyError":
+    "Could not find or buy this card. It may have sold, or you may have insufficient coins. Please try again.",
+  "plugins.album.buySuccess": "Card bought and sent to your club.",
   "plugins.album.trackingError": "Could not update player tracking. Please try again.",
   "plugins.album.open": "Open Album",
   "plugins.album.league": "League",
@@ -231,6 +245,12 @@ export const englishTranslations = {
   "plugins.marketSearchFilters.settings.hideDuplicates": "Hide player duplicates in Market Search",
   "plugins.marketSearchFilters.settings.holographicFilters": "Enabled Holographic Filter",
   "plugins.marketSearchFilters.holographicOnly": "Holographic only",
+  "plugins.marketSearchFilters.settings.revisionFilters": "Enable Revision Filter",
+  "controls.playerRevisions.revision": "Revision",
+  "controls.playerRevisions.holographic": "Holographic",
+  "controls.playerRevisions.allRevisions": "All revisions",
+  "controls.playerRevisions.revisionError":
+    "Could not load player revisions. Select the player again to retry.",
   "plugins.marketSearchFilters.filterSaved": "Filter saved",
   "plugins.marketSearchFilters.filterDeleted": "Filter deleted",
   "plugins.marketSearchFilters.loadFilters": "-- Select a filter to load --",

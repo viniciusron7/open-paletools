@@ -6,4 +6,4 @@
  * - Must match `@version` in src/userscript-header.js (a test checks it). check-for-updates
  *   compares it numerically, part by part, with the version file published on pale.tools.
  */
-export const paletoolsVersion = "27.1.5";
+export const paletoolsVersion = "27.2.1";

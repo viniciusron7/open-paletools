@@ -40,3 +40,15 @@
     padding-right: 8px;
     order: 30;
 }
+
+.ut-market-search-filters-view .ut-player-search-control {
+    order: -2;
+}
+
+.ut-market-search-filters-view .player-revision-filter {
+    order: -1;
+}
+
+.ut-market-search-filters-view .ut-item-search-view-ovr-range-container {
+    flex-basis: 100%;
+}

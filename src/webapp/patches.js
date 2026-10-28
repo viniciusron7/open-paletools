@@ -41,9 +41,9 @@
  *   swap also happens with `disableOverrides`; only the next search, `setItems` or a restore call
  *   undoes it.
  * - Without `criteria.disableOverrides` the search returns a NEW `EAObservable`, notified after
- *   the transformers ((items, controller active at request time), native Promises awaited) and
- *   validators ((items, services.Item); the first falsy one sets `response.success = false`) ran
- *   in order; `setItems` handlers run after the original with (items, active controller).
+ *   the transformers ((items, controller active at request time, search criteria), native
+ *   Promises awaited) and validators ((items, services.Item, search criteria); the first falsy
+ *   one sets `response.success = false`) ran in order; `setItems` handlers run after the original with (items, active controller).
  * - Before the original: `list` records a buy from `lastSalePrice`, `submitChallenge` collects
  *   the squad's players, `onClubSearchComplete` drops locked players
  *   (`playerActions.lockPlayer` and `this.challenge`), `_getUnassignedItems` dirties
@@ -152,6 +152,7 @@ export function applyWebAppPatches() {
       };
       const currentController = getActiveController();
       const resultObservable = new EAObservable();
+      const searchCriteria = args[0];
       const searchObservable = originalSearchTransferMarket.call(this, ...args);
       if (args[0].disableOverrides) {
         return searchObservable;
@@ -161,14 +162,18 @@ export function applyWebAppPatches() {
             let searchResultItems = response.data.items;
             if (marketSearchResultTransformers.length > 0) {
               for (let resultTransformer of marketSearchResultTransformers) {
-                let transformedItems = resultTransformer(searchResultItems, currentController);
+                let transformedItems = resultTransformer(
+                  searchResultItems,
+                  currentController,
+                  searchCriteria,
+                );
                 searchResultItems = isPromise(transformedItems)
                   ? await transformedItems
                   : transformedItems;
               }
             }
             for (let resultValidator of marketSearchResultValidators) {
-              let validationResult = resultValidator(searchResultItems, this);
+              let validationResult = resultValidator(searchResultItems, this, searchCriteria);
               if (isPromise(validationResult)) {
                 if (!(await validationResult)) {
                   response.success = false;

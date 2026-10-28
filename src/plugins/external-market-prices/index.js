@@ -7,8 +7,10 @@
  * - In `run()`, `hookPrototypeMethod` after-hooks: `_generate` of UTItemTableCellView,
  *   UTLargePlayerItemView, UTSquadSlotView, UTSquadOverviewView and UTSectionedItemListView;
  *   `setSquad`/`updateSlot` of UTSquadOverviewView and UTSBCSquadOverviewView;
+ *   `UTOneClickSBCWorkAreaItemView._generate` (27.2.1);
  *   `UTPaginatedItemListView._renderItems`; `UTSectionedItemListView.render`/`setActionHeader`;
- *   `UTStoreRevealModalListView.addItems`; `UTLargePlayerItemView.renderItem`.
+ *   `UTStoreRevealModalListView.addItems`; `UTLargePlayerItemView.renderItem`;
+ *   `UTOneClickSBCItemGridView.setItems` (27.2.1).
  *
  * Invariants:
  * - Stylesheet `paletools-external-market-prices` is injected at module evaluation, only when
@@ -19,6 +21,10 @@
  * - Labels: `extinct`, `objectives.popup.section.title` (without ' %1'), `nav.label.sbc`;
  *   otherwise a price > 0 or hidden; price only on large items in the SBC hub. Squad totals:
  *   slots 0-10 pitch, 11-17 bench, others reserves.
+ * - `renderExternalPrices(getViews, getItem, ...)` calls `getItem(view, index)`, the index being
+ *   the view's position in `getViews()`; the one-click SBC grid uses it to read
+ *   `this._items[index].item`, and its work-area tiles get their own `__externalPrice` display
+ *   in a footer `item-values-container`.
  * - `UTSectionedItemListView.prototype.displayTotalPrices` (false) is opt-in, set by
  *   src/plugins/sbc-auto-solver/preview-view.js: the header title gets a
  *   `.section-list-prices-sum` span, removed by `setActionHeader`.
@@ -86,11 +92,13 @@ externalMarketPricesPluginDefinition = {
       showPriceOnly = false,
     ) {
       const pricesByDefinitionId = await requestExternalPrices(
-        getViews().map((view) => getItem(view)),
+        getViews().map((view, viewIndex) => getItem(view, viewIndex)),
       );
       let total = 0;
+      let viewIndex = -1;
       for (let view of getViews()) {
-        const priceInfo = pricesByDefinitionId[getItem(view).definitionId];
+        viewIndex++;
+        const priceInfo = pricesByDefinitionId[getItem(view, viewIndex).definitionId];
         if (priceInfo) {
           if (priceInfo.isExtinct && !showPriceOnly) {
             view.__externalPrice.setValue(translate("extinct"));
@@ -153,6 +161,16 @@ externalMarketPricesPluginDefinition = {
             this.__externalPriceTotal,
           );
           hideElements(this.__pricesContainer);
+        }
+      });
+      hookPrototypeMethod(UTOneClickSBCWorkAreaItemView, "_generate", null, function (...args) {
+        if (configuration.enabled && externalMarketPricesSettings.enabled) {
+          this.__itemValuesContainer = createElement("div", {
+            className: "item-values-container",
+          });
+          this.__externalPrice = new ItemValueDisplay(0, "external-market-price");
+          appendElements(this.__itemValuesContainer, this.__externalPrice);
+          appendElements(this.__footer, this.__itemValuesContainer);
         }
       });
       hookPrototypeMethod(
@@ -270,6 +288,14 @@ externalMarketPricesPluginDefinition = {
             (view) => args[0],
             null,
             getActiveController() instanceof UTSBCHubViewController,
+          );
+        }
+      });
+      hookPrototypeMethod(UTOneClickSBCItemGridView, "setItems", null, function (items) {
+        if (configuration.enabled && externalMarketPricesSettings.enabled) {
+          renderExternalPrices(
+            () => this._itemTileViews,
+            (view, viewIndex) => this._items[viewIndex].item,
           );
         }
       });

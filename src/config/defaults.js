@@ -17,6 +17,9 @@
  *   src/webapp/search-criteria-limits.js), read when the bundle is evaluated.
  * - Snipe key bindings (`plugins.snipe.buttons`) are `KeyboardEvent.code` values.
  * - `appVersion` is persisted but never read; after loading it holds the stored value.
+ * - 27.2.1 changed `marketSearchFilters.playerRating` to false (now the OVR range filter) and
+ *   added `marketSearchFilters.revisionFilters`, `album.buyEnabled` and `gallery.buyEnabled`
+ *   (all false); stored values still win through the merge.
  */
 import { paletoolsVersion } from "./version.js";
 import { maxOvr, minOvr } from "../webapp/search-criteria-limits.js";
@@ -53,10 +56,11 @@ export let configurationState = {
     },
     marketSearchFilters: {
       playerId: false,
-      playerRating: true,
+      playerRating: false,
       savedFilters: true,
       hideDuplicates: false,
       holographicFilters: false,
+      revisionFilters: false,
     },
     donation: {
       enabled: true,
@@ -76,6 +80,7 @@ export let configurationState = {
       removeAllEvolutions: true,
     },
     gallery: {
+      buyEnabled: false,
       lastSelection: {},
       enabled: true,
     },
@@ -83,6 +88,7 @@ export let configurationState = {
       enabled: true,
     },
     album: {
+      buyEnabled: false,
       lastSelection: {},
       enabled: true,
     },

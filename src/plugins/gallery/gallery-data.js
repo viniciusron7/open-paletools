@@ -8,8 +8,9 @@
  *   hold the references, so never reassign them.
  * - `getGallerySetCriteria`: club sets (plus linked clubs from `teamConfigRepo.getTeamLinks()`
  *   when the description says "Mens or Womens", or only women's clubs of leagues
- *   2215/2216/2218/2222 when it says "Women"), league sets (`galleryLeagueIdBySetId`), rarity
- *   sets (`galleryRarityBySetId`, 127, 116) and set 113 (all players); any other set id throws.
+ *   2215/2216/2218/2222/2221 when it says "Women"), league sets (`galleryLeagueIdBySetId`),
+ *   rarity sets (`galleryRarityBySetId`, 127, 128, 116) and set 113 (all players); any other set
+ *   id throws.
  * - `createGallerySearchCriteria`: players, rating descending, page size
  *   `configuration.requests.maxItemsCount`.
  * - `getCachedGalleryPromise` evicts a rejected promise only if the cache still holds it;
@@ -33,6 +34,9 @@ const galleryLeagueIdBySetId = {
   103: 31,
   122: 19,
   120: 2215,
+  155: 350,
+  173: 39,
+  193: 2221,
 };
 
 const galleryRarityBySetId = {
@@ -69,7 +73,7 @@ export function getGallerySetCriteria(gallerySet) {
       clubIds.push(...linkedClubIds);
     } else if (/Women/i.test(gallerySet.description)) {
       const womensClubIds = new Set(
-        [2215, 2216, 2218, 2222].flatMap((leagueId) =>
+        [2215, 2216, 2218, 2222, 2221].flatMap((leagueId) =>
           factories.DataProvider.getTeamDP(leagueId)
             .filter((team) => team.id > 0)
             .map((team) => team.id),
@@ -102,6 +106,13 @@ export function getGallerySetCriteria(gallerySet) {
     return [
       {
         rarities: [150, 22, 71],
+      },
+    ];
+  }
+  if (gallerySet.id === 128) {
+    return [
+      {
+        rarities: [42, 43, 79, 86, 114, 177],
       },
     ];
   }

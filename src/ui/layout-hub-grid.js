@@ -39,10 +39,10 @@ class LayoutHubTile {
   #I = createElement("h1", {
     className: "tileHeader",
   });
-  #x = createElement("div", {
+  #E = createElement("div", {
     className: "tileContent",
   });
-  #E = 1;
+  #x = 1;
   #_ = 1;
   constructor(columns = 1) {
     this.#_ = columns;
@@ -52,20 +52,20 @@ class LayoutHubTile {
     return this;
   }
   ["span"](span) {
-    this.#E = span;
+    this.#x = span;
     return this;
   }
   ["content"](...elements) {
-    appendElements(this.#x, ...elements);
+    appendElements(this.#E, ...elements);
     return this;
   }
   ["getRootElement"]() {
     const root = createElement("div", {
-      className: "tile col-" + this.#E + "-" + this.#_,
+      className: "tile col-" + this.#x + "-" + this.#_,
     });
     const header = createElement("header", {});
     appendElements(header, this.#I);
-    appendElements(root, header, this.#x);
+    appendElements(root, header, this.#E);
     return root;
   }
 }

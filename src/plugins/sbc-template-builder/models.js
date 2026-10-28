@@ -211,12 +211,12 @@ SbcTemplateFilter.prototype.serialize = function () {
 
 export class GlobalSbcTemplate {
   #Y;
-  #Q;
-  #K = [];
+  #K;
+  #Q = [];
   constructor(template) {
     this.#Y = template.id;
-    this.#Q = template.name;
-    this.#K = template.steps.map(
+    this.#K = template.name;
+    this.#Q = template.steps.map(
       (step) => new SbcTemplateFilter(step.searchCriteria, step.searchSettings),
     );
   }
@@ -224,45 +224,45 @@ export class GlobalSbcTemplate {
     return this.#Y;
   }
   get ["name"]() {
-    return this.#Q;
-  }
-  get ["filters"]() {
     return this.#K;
   }
+  get ["filters"]() {
+    return this.#Q;
+  }
   ["serialize"]() {
-    return this.#K.map((filter) => filter.serialize()).join("|");
+    return this.#Q.map((filter) => filter.serialize()).join("|");
   }
 }
 
 export class SbcChallengeTemplate {
+  #X;
   #J;
-  #Z;
-  #K = [];
-  #X = [];
+  #Q = [];
+  #Z = [];
   #$;
   #ee = [];
   constructor(sbcSet, challenge, globalTemplateId) {
-    this.#J = sbcSet;
-    this.#Z = challenge;
+    this.#X = sbcSet;
+    this.#J = challenge;
     this.#$ = globalTemplateId;
   }
   get ["set"]() {
-    return this.#J;
-  }
-  get ["challenge"]() {
-    return this.#Z;
-  }
-  get ["filters"]() {
-    return this.#K;
-  }
-  set ["filters"](filters) {
-    this.#K = filters;
-  }
-  get ["exclusions"]() {
     return this.#X;
   }
+  get ["challenge"]() {
+    return this.#J;
+  }
+  get ["filters"]() {
+    return this.#Q;
+  }
+  set ["filters"](filters) {
+    this.#Q = filters;
+  }
+  get ["exclusions"]() {
+    return this.#Z;
+  }
   set ["exclusions"](exclusions) {
-    this.#X = exclusions;
+    this.#Z = exclusions;
   }
   get ["globalTemplateId"]() {
     return this.#$;

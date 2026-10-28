@@ -1,7 +1,8 @@
 /**
  * Album plugin definition `albumPlugin` (order 10004), installed by the plugin list in
  * src/bootstrap/boot.js: adds an Album tile to the home hub that pushes `AlbumViewController`;
- * the settings menu holds the enable toggle.
+ * the settings menu holds the enable toggle and `buyEnabled` (the Buy button, 27.2.1, off by
+ * default; switching it on asks `plugins.dangerous` and stays off if not confirmed).
  *
  * Hooks:
  * - Only if `configuration.enabled && album.enabled` at `run()`: after-hook
@@ -64,6 +65,18 @@ albumPluginDefinition = {
         albumSettings.enabled = isEnabled;
         persistConfiguration();
       });
+      appendToggle(
+        menuContainer,
+        "plugins.album.settings.buyEnabled",
+        albumSettings.buyEnabled,
+        (isEnabled) => {
+          if (isEnabled && !confirm(translate("plugins.dangerous"))) {
+            return false;
+          }
+          albumSettings.buyEnabled = isEnabled;
+          persistConfiguration();
+        },
+      );
       return menuContainer;
     },
   },

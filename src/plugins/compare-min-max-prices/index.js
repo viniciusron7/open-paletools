@@ -12,7 +12,8 @@
  * - `setItems` acts only with a pinned item; it sorts the incoming array IN PLACE (setting
  *   `order` 'asc'/'desc'; null or 'none' keeps server order) before the original;
  *   min/max/cheapest live on the view and accumulate across pages until it is regenerated; the
- *   cheapest entity gets `isCheapest = true`.
+ *   cheapest entity gets `isCheapest = true`. Items of type `ItemType.NONE` (the placeholders the
+ *   market-search-filters plugin pads result pages with) are ignored for min/max.
  * - The minimum is written to the shared lowest-price cache (`cacheLowestMarketPrice`).
  * - The `.min-max-prices.paletools-element` container is created only when enabled at `_generate`
  *   (once per view); its appEnabled/appDisabled listeners are never removed. Settings `enabled`,
@@ -110,7 +111,7 @@ compareMinMaxPricesPluginDefinition = {
             if (!this._cheapestItem) {
               this._cheapestItem = searchResultItems[0];
             }
-            for (let item of searchResultItems) {
+            for (let item of searchResultItems.filter((result) => result.type !== ItemType.NONE)) {
               const auctionData = item.getAuctionData();
               if (auctionData.buyNowPrice > this._maxBuyNowPrice) {
                 this._maxBuyNowPrice = auctionData.buyNowPrice;

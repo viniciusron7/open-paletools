@@ -1,8 +1,8 @@
 /**
  * `ClubAnalyzerView` (EAView subclass), created by `ClubAnalyzerViewController`: filter-bar tabs,
  * reload and CSV/HTML export buttons (exports on desktop only), dashboard counters, a
- * leaderboards `DataTable`, collapsible count trees (rating, rarity, league, nation) and
- * auction-style tables (club, unassigned, transfer list, transfer targets, SBC storage).
+ * leaderboards `DataTable`, collapsible count trees (rating, rarity, SBS score, league, nation)
+ * and auction-style tables (club, unassigned, transfer list, transfer targets, SBC storage).
  *
  * Invariants:
  * - `JSUtils.inherits(ClubAnalyzerView, EAView)` must run before the prototype assignments.
@@ -14,6 +14,10 @@
  *   `unnasigned`) match nothing created here.
  * - Tab switching and `update` query `.club-analyzer-report` in the whole document; `update`
  *   replaces the body, shows the first report and binds click toggles on every tree `li`.
+ * - Count trees sort their first level with `parseInt` differences for the rating and score
+ *   reports and with `localeCompare` otherwise; deeper levels always use `localeCompare`.
+ * - The dashboard (27.2.1) shows common gold/silver/bronze, TOTW, the summed SBS score
+ *   (`counters.sbsScore`) and the unassigned/transfer list/transfer targets totals.
  * - `translateClubAnalyzerKey` falls back to the plain EA key when `plugins.clubAnalyzer.<key>`
  *   is missing (detected by the result containing the key).
  * - Player links: `https://www.fut.gg/players/<slug>/<APP_YEAR_SHORT>-<definitionId>`.
@@ -75,6 +79,7 @@ ClubAnalyzerView.prototype._appendMainMenu = function (container) {
     translateClubAnalyzerKey("leaderboards.tile.title"),
   );
   eAFilterBarView.addTab("clubanalyzer-players-by-rating", "Rating");
+  eAFilterBarView.addTab("clubanalyzer-players-by-score", "Score");
   eAFilterBarView.addTab(
     "clubanalyzer-players-by-rarity",
     translateClubAnalyzerKey("extendedPlayerInfo.general.rarity"),
@@ -172,46 +177,16 @@ ClubAnalyzerView.prototype._createDashboard = function () {
     },
     '<h3 class="tile">\n                ' +
       translateClubAnalyzerKey("view.dashboard.description") +
-      '\n                </h3>\n                <div>\n                <table class="rarities tile">\n                    <tr><th></th><th>' +
-      translateClubAnalyzerKey("item.raretype1") +
-      "</th><th>" +
-      translateClubAnalyzerKey("item.raretype0") +
-      '</th></tr>\n                    <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/SearchFilters/level/gold.png" /></td><td>' +
-      counters.rare.gold +
-      "</td><td>" +
+      '\n                </h3>\n                <div>\n                <table class="rarities tile">\n                    <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/SearchFilters/level/gold.png" /></td><td>' +
       counters.common.gold +
       '</td></tr>\n                    <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/SearchFilters/level/silver.png" /></td><td>' +
-      counters.rare.silver +
-      "</td><td>" +
       counters.common.silver +
       '</td></tr>\n                    <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/SearchFilters/level/bronze.png" /></td><td>' +
-      counters.rare.bronze +
-      "</td><td>" +
       counters.common.bronze +
       '</td></tr>\n                    <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/SearchFilters/level/SP.png" /></td><td>' +
       counters.totw +
-      '</td><td></td></tr>\n                </table>\n                </div>\n                <div>\n                    <table class="latam tile">\n                        <tr>\n                            <th></th>\n                            <th>MOTM</th>\n                            <th>' +
-      translateClubAnalyzerKey("search.cardLevels.cardLevel3") +
-      "</th>\n                            <th>" +
-      translateClubAnalyzerKey("search.cardLevels.cardLevel2") +
-      "</th>\n                            <th>" +
-      translateClubAnalyzerKey("search.cardLevels.cardLevel1") +
-      '</th>\n                        </tr>\n                        <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/content/25E4CDAE-799B-45BE-B257-667FDCDE8044/2025/fut/items/images/mobile/leagues/dark/1003.png" /></td>\n                            <td>' +
-      counters.libertadores.motm +
-      "</td>\n                            <td>" +
-      counters.libertadores.gold +
-      "</td>\n                            <td>" +
-      counters.libertadores.silver +
-      "</td>\n                            <td>" +
-      counters.libertadores.bronze +
-      '</td>\n                        </tr>\n                        <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/content/25E4CDAE-799B-45BE-B257-667FDCDE8044/2025/fut/items/images/mobile/leagues/dark/1014.png" /></td>\n                        <td>' +
-      counters.sudamericana.motm +
-      "</td>\n                        <td>" +
-      counters.sudamericana.gold +
-      "</td>\n                        <td>" +
-      counters.sudamericana.silver +
-      "</td>\n                        <td>" +
-      counters.sudamericana.bronze +
+      '</td><td></td></tr>\n                </table>\n                </div>\n                <div>\n                    <table class="latam tile">\n                        <tr><td><img src="https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/sbc/dustpoint.png" /></td>\n                            <td>' +
+      counters.sbsScore +
       '</td>\n                        </tr>\n                    </table>\n                    <table class="limbo tile">\n                        <tr><th>' +
       translateClubAnalyzerKey("navbar.label.newitems") +
       "</th><th>" +
@@ -386,18 +361,22 @@ ClubAnalyzerView.prototype._createLeaderboards = function () {
   return leaderboardsReport;
 };
 
-ClubAnalyzerView.prototype._createCountReport = function (reportId, groupedPlayers) {
+ClubAnalyzerView.prototype._createCountReport = function (
+  reportId,
+  groupedPlayers,
+  sortNumerically,
+) {
   return createElement(
     "div",
     {
       id: reportId,
       className: "club-analyzer-report",
     },
-    this._createCountReportTree(groupedPlayers, 0),
+    this._createCountReportTree(groupedPlayers, 0, sortNumerically),
   );
 };
 
-ClubAnalyzerView.prototype._createCountReportTree = function (node, depth) {
+ClubAnalyzerView.prototype._createCountReportTree = function (node, depth, sortNumerically) {
   let markup = "<div>";
   if (node instanceof Array) {
     markup += '<ul class="players" style="display: none">';
@@ -407,7 +386,9 @@ ClubAnalyzerView.prototype._createCountReportTree = function (node, depth) {
     markup += "</ul>";
   } else {
     markup += depth === 0 ? "<ul>" : '<ul style="display: none">';
-    for (let groupName of Object.keys(node).sort()) {
+    for (let groupName of Object.keys(node).sort((left, right) =>
+      sortNumerically ? parseInt(left) - parseInt(right) : left.localeCompare(right),
+    )) {
       markup += depth === 0 ? '<li class="inline-list">' : "<li>";
       markup += '<span class="value">' + groupName + "</span>";
       markup +=
@@ -635,8 +616,9 @@ ClubAnalyzerView.prototype.update = function (viewmodel) {
     this._body,
     this._createDashboard(viewmodel),
     this._createLeaderboards(viewmodel),
-    this._createCountReport("clubanalyzer-report-by-rating", viewmodel.players.byRating),
+    this._createCountReport("clubanalyzer-report-by-rating", viewmodel.players.byRating, true),
     this._createCountReport("clubanalyzer-report-by-rarity", viewmodel.players.byRarity),
+    this._createCountReport("clubanalyzer-report-by-score", viewmodel.players.bySbsScore, true),
     this._createCountReport("clubanalyzer-report-by-league", viewmodel.players.byLeague),
     this._createCountReport("clubanalyzer-report-by-nation", viewmodel.players.byNation),
     this._createAuctionReport(

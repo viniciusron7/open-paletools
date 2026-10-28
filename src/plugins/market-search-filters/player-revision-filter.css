@@ -1,0 +1,7 @@
+.player-revision-filter { flex: 1 0 100%; width: 100%; margin: 8px 0; }
+.player-revision-filter[hidden] { display: none !important; }
+.player-revision-filter > summary { cursor: pointer; padding: 12px; background: #233144; border: 1px solid #deded826; }
+.player-revision-filter-options { display: flex; flex-wrap: wrap; gap: 8px; max-height: 420px; overflow-y: auto; padding: 8px; }
+.player-revision-filter-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px; color: inherit; border: 2px solid transparent; background: #233144; cursor: pointer; }
+.player-revision-filter-option[aria-pressed="true"], .player-revision-filter-option:focus-visible { border-color: #9eff00; }
+.player-revision-filter-option > .item { pointer-events: none; }
