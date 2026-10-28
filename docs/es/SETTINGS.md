@@ -1,6 +1,6 @@
 # Configuración predeterminada
 
-[English](../SETTINGS.md) | [Português (Brasil)](../pt-BR/SETTINGS.md) | Español
+[English](../SETTINGS.md) | [Português](../pt/SETTINGS.md) | Español
 
 El valor predeterminado de cada ajuste se define en [`src/config/defaults.js`](../../src/config/defaults.js) (`plugins.<nombre>` almacena los ajustes de cada plugin).
 

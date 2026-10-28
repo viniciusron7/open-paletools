@@ -1,6 +1,6 @@
 # How the build works
 
-English | [Português (Brasil)](pt-BR/BUILD.md) | [Español](es/BUILD.md)
+English | [Português](pt/BUILD.md) | [Español](es/BUILD.md)
 
 [`scripts/build.mjs`](../scripts/build.mjs) validates all modules (see [Module rules](MODULE-RULES.md)) and then assembles the output file:
 

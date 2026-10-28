@@ -1,6 +1,6 @@
 # Debugging
 
-English | [Português (Brasil)](pt-BR/DEBUGGING.md) | [Español](es/DEBUGGING.md)
+English | [Português](pt/DEBUGGING.md) | [Español](es/DEBUGGING.md)
 
 - Runtime errors and `console.log` output appear in the browser's developer tools console on the Web App page.
 - The installed script is the generated build file: each module is delimited by `// #region src/...` and `// #endregion src/...` comments, allowing stack trace lines to be mapped directly to their source module.

@@ -1,6 +1,6 @@
 # Configurações padrão
 
-[English](../SETTINGS.md) | Português (Brasil) | [Español](../es/SETTINGS.md)
+[English](../SETTINGS.md) | Português | [Español](../es/SETTINGS.md)
 
 O valor padrão de cada configuração fica definido em [`src/config/defaults.js`](../../src/config/defaults.js) (`plugins.<nome>` armazena as configurações de cada plugin).
 

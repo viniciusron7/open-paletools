@@ -1,6 +1,6 @@
 # Commands
 
-English | [Português (Brasil)](pt-BR/COMMANDS.md) | [Español](es/COMMANDS.md)
+English | [Português](pt/COMMANDS.md) | [Español](es/COMMANDS.md)
 
 Run `npm ci` once after cloning the repository to install the tools required by the remaining commands.
 

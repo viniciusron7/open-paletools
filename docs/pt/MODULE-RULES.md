@@ -1,6 +1,6 @@
 # Regras de módulos
 
-[English](../MODULE-RULES.md) | Português (Brasil) | [Español](../es/MODULE-RULES.md)
+[English](../MODULE-RULES.md) | Português | [Español](../es/MODULE-RULES.md)
 
 O build reúne todos os módulos em um único escopo compartilhado, seguindo a ordem definida em [`src/manifest.json`](../../src/manifest.json), assim como no bundle original. `npm run build` e `npm run check:modules` validam as regras abaixo antes de gerar qualquer arquivo.
 

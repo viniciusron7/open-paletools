@@ -1,6 +1,6 @@
 # Actualización
 
-[English](../UPDATING.md) | [Português (Brasil)](../pt-BR/UPDATING.md) | Español
+[English](../UPDATING.md) | [Português](../pt/UPDATING.md) | Español
 
 Existen dos tipos de actualización:
 

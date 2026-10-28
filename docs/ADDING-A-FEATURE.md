@@ -1,6 +1,6 @@
 # Adding a feature
 
-English | [Português (Brasil)](pt-BR/ADDING-A-FEATURE.md) | [Español](es/ADDING-A-FEATURE.md)
+English | [Português](pt/ADDING-A-FEATURE.md) | [Español](es/ADDING-A-FEATURE.md)
 
 A feature is a plugin: an object with a `run()` function, executed once when the Web App is ready to install the plugin's hooks, and optionally a `settings` block for the Paletools settings screen.
 

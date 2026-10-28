@@ -1,6 +1,6 @@
 # Comandos
 
-[English](../COMMANDS.md) | Português (Brasil) | [Español](../es/COMMANDS.md)
+[English](../COMMANDS.md) | Português | [Español](../es/COMMANDS.md)
 
 Executar `npm ci` uma vez após clonar o repositório para instalar as dependências necessárias aos demais comandos.
 

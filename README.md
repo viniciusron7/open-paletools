@@ -1,6 +1,6 @@
 # open-paletools
 
-English | [Português (Brasil)](README.pt-BR.md) | [Español](README.es.md)
+English | [Português](README.pt.md) | [Español](README.es.md)
 
 Modular, deobfuscated source code of the Paletools userscript for the EA SPORTS FC Ultimate Team Web App.
 

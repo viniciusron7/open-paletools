@@ -1,6 +1,6 @@
 # Adição de funcionalidades
 
-[English](../ADDING-A-FEATURE.md) | Português (Brasil) | [Español](../es/ADDING-A-FEATURE.md)
+[English](../ADDING-A-FEATURE.md) | Português | [Español](../es/ADDING-A-FEATURE.md)
 
 Uma funcionalidade consiste em um plugin: um objeto com uma função `run()`, executada uma única vez quando o Web App está pronto para instalar os hooks necessários, e opcionalmente um bloco `settings` para a tela de configurações do Paletools.
 

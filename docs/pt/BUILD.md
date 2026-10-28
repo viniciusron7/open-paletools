@@ -1,6 +1,6 @@
 # Funcionamento do build
 
-[English](../BUILD.md) | Português (Brasil) | [Español](../es/BUILD.md)
+[English](../BUILD.md) | Português | [Español](../es/BUILD.md)
 
 [`scripts/build.mjs`](../../scripts/build.mjs) valida todos os módulos (consultar [Regras de módulos](MODULE-RULES.md)) e, em seguida, monta o arquivo final:
 

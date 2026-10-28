@@ -1,6 +1,6 @@
 # Depuração
 
-[English](../DEBUGGING.md) | Português (Brasil) | [Español](../es/DEBUGGING.md)
+[English](../DEBUGGING.md) | Português | [Español](../es/DEBUGGING.md)
 
 - Erros de execução e mensagens de `console.log` são exibidos no console das ferramentas de desenvolvedor do navegador na página do Web App.
 - O script instalado corresponde ao arquivo gerado pelo build: cada módulo é delimitado por comentários `// #region src/...` e `// #endregion src/...`, permitindo localizar diretamente o módulo de origem a partir da linha informada no stack trace.

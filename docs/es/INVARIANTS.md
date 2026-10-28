@@ -1,6 +1,6 @@
 # Invariantes y comportamientos sensibles
 
-[English](../INVARIANTS.md) | [Português (Brasil)](../pt-BR/INVARIANTS.md) | Español
+[English](../INVARIANTS.md) | [Português](../pt/INVARIANTS.md) | Español
 
 Este documento reúne las reglas y comportamientos que una modificación puede romper inadvertidamente. Los detalles específicos de cada módulo se encuentran en el comentario de cabecera de su propio archivo en `src/`.
 

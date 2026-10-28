@@ -1,6 +1,6 @@
 # Pruebas
 
-[English](../TESTING.md) | [Português (Brasil)](../pt-BR/TESTING.md) | Español
+[English](../TESTING.md) | [Português](../pt/TESTING.md) | Español
 
 `npm test` compila una copia temporal del userscript (sin modificar `dist/` ni incrementar el [número de build](BUILD.md#versión-y-número-de-build)) y ejecuta:
 

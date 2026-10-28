@@ -1,6 +1,6 @@
 # Module rules
 
-English | [Português (Brasil)](pt-BR/MODULE-RULES.md) | [Español](es/MODULE-RULES.md)
+English | [Português](pt/MODULE-RULES.md) | [Español](es/MODULE-RULES.md)
 
 The build places all modules into a single shared scope in the order defined by [`src/manifest.json`](../src/manifest.json), matching the original bundle. `npm run build` and `npm run check:modules` enforce these rules before writing any output.
 
